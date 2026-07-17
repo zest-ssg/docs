@@ -1,46 +1,17 @@
 # Templates & Layouts
 
-Zest supports multiple template engines. The default engine uses simple `{{ placeholder }}` syntax, and a full Nunjucks-compatible engine is available.
+Zest supports two layout-processing paths selected by `template_engine` in `_config.toml` (see [configuration.md](configuration.md)):
 
-## Template Engines
+- **`native`** (default): simple `{{ placeholder }}` substitution only.
+- **`nunjucks`** (or the `.njk` extension on a layout file): full Nunjucks-compatible engine — tags, blocks, inheritance, filters, macros.
 
-### Native Mode (Default)
-
-Set `template_engine = "native"` in `_config.toml` (default). This engine supports:
-
-- `{{ page.title }}` — page metadata placeholders
-- `{{ site.title }}` — site-level placeholders
-- `{{ content }}` — page body content
-- `{{ include name }}` — include partials
-
-### Nunjucks Mode
-
-Set `template_engine = "nunjucks"` for a full Nunjucks-compatible engine with tags, blocks, inheritance, filters, and macros. Also available for individual layout files by using `.njk` extension.
+Partials and Markdown/HTML pages are always routed through the active engine. 11ty-style formats (Liquid, Handlebars, Mustache, HAML, Pug, WebC) are auto-converted into Nunjucks input before rendering.
 
 ---
 
 ## Layouts
 
-Layouts are templates in `_layouts/` that wrap page content. The layout to use is specified in the page:
-
-```fsharp
-page {
-    layout "default"
-    // ...
-}
-```
-
-Or in frontmatter:
-
-```markdown
-+++
-layout = "default"
-+++
-```
-
-### Layout File Naming
-
-Layout files are identified by name (without extension):
+Layouts live in `_layouts/` and wrap a page's rendered body. The layout is selected via `page { layout "name" }` or frontmatter `layout = "name"` (the **name** is the file stem, extension omitted).
 
 ```
 _layouts/
@@ -50,9 +21,9 @@ _layouts/
 └── special.haml      → layout "special"
 ```
 
-Supported layout extensions: `.html`, `.htm`, `.njk`, `.liquid`, `.hbs`, `.mustache`, `.zest.fsx`, `.fsx`.
+Supported layout extensions: `.html`, `.htm`, `.njk`, `.liquid`, `.hbs`, `.mustache`, `.haml`, `.pug`, `.webc`, `.zest.fsx`, `.fsx`.
 
-### Layout Example (Native Syntax)
+### Native-layout example
 
 ```html
 <!-- _layouts/default.html -->
@@ -74,7 +45,7 @@ Supported layout extensions: `.html`, `.htm`, `.njk`, `.liquid`, `.hbs`, `.musta
 </html>
 ```
 
-### Layout Example (Nunjucks)
+### Nunjucks-layout example
 
 ```njk
 <!-- _layouts/default.njk -->
@@ -95,9 +66,9 @@ Supported layout extensions: `.html`, `.htm`, `.njk`, `.liquid`, `.hbs`, `.musta
 </html>
 ```
 
-### Nested Layouts
+### Nested layouts
 
-Layouts can chain via TOML frontmatter or HTML comments:
+A layout may itself declare a parent via TOML frontmatter or an HTML-comment header:
 
 ```html
 <!-- _layouts/post.html -->
@@ -109,9 +80,8 @@ layout = "default"
 </article>
 ```
 
-Or:
-
 ```html
+<!-- _layouts/post.html -->
 <!-- @layout default -->
 <article>
     {{ content }}
@@ -122,7 +92,7 @@ Or:
 
 ## Includes
 
-Partials are placed in `_includes/` and referenced by filename (with or without extension):
+Partials live in `_includes/` and are referenced by file stem (extension optional). Include resolution is recursive up to **10 levels** deep.
 
 ```
 _includes/
@@ -132,42 +102,30 @@ _includes/
 └── analytics.njk
 ```
 
-### Native Syntax
-
-```
-{{ include header }}
-{{ include footer }}
-```
-
-Includes support recursive resolution up to 10 levels deep.
-
-### Nunjucks Syntax
-
-```njk
-{% include "header" %}
-{% include "footer" %}
-```
+| Syntax | Form |
+|---|---|
+| Native | `{{ include header }}` |
+| Nunjucks | `{% include "header" %}` |
 
 ---
 
 ## Placeholder Reference
 
-### `page.*` Placeholders
+### `page.*`
 
 | Placeholder | Source | Description |
 |---|---|---|
 | `{{ page.title }}` | `page { title "..." }` or frontmatter | Page title |
-| `{{ page.url }}` | Computed by permalink router | Page URL, e.g. `/posts/hello/` |
+| `{{ page.url }}` | Permalink router | Page URL, e.g. `/posts/hello/` |
 | `{{ page.slug }}` | Derived from filename | URL slug |
-| `{{ page.date }}` | `page { date ... }` or frontmatter | Date as `yyyy-MM-dd` |
-| `{{ page.tags }}` | `page { tags [...] }` or frontmatter | Tags as comma-separated string |
+| `{{ page.date }}` | `page { date ... }` or frontmatter | Date (`yyyy-MM-dd`) |
+| `{{ page.tags }}` | `page { tags [...] }` or frontmatter | Tags (array) |
 | `{{ page.description }}` | `page { description "..." }` or frontmatter | Meta description |
-| `{{ page.content }}` | Auto-generated | Rendered page content (alias for `{{ content }}`) |
-| `{{ content }}` | Auto-generated | Rendered page content |
+| `{{ page.content }}` / `{{ content }}` | Auto-generated | Rendered page body |
 
 Custom data set via `page { data "key" value }` is available as `{{ page.key }}`.
 
-### `site.*` Placeholders
+### `site.*`
 
 | Placeholder | Source |
 |---|---|
@@ -177,126 +135,91 @@ Custom data set via `page { data "key" value }` is available as `{{ page.key }}`
 | `{{ site.version }}` | `_config.toml` → `site_version` |
 | `{{ site.author }}` | `_config.toml` → `author` |
 | `{{ site.language }}` | `_config.toml` → `language` |
-| `{{ site.{namespace}.{key} }}` | `_data/{namespace}.toml` files |
+| `{{ site.{namespace}.{key} }}` | `_data/{namespace}.toml` |
 | `{{ menu.{name} }}` | `_config.toml` → `[menu.{name}]` |
 
 ---
 
 ## Nunjucks Engine Reference
 
-The built-in Nunjucks engine (`NunjucksEngine`) implements a compatible subset of Nunjucks syntax.
+The built-in engine (`NunjucksEngine`) implements a compatible subset of Nunjucks syntax. Its behavior is governed by `nunjucks_compatibility` in `_config.toml`:
+
+- **`zest`** (default): official Nunjucks tags/filters **plus** Zest's custom page-query filters (`pages_by_tag`, `recent`, `by_collection`, `search`, `where`).
+- **`strict`**: official Nunjucks only — Zest custom filters are skipped.
 
 ### Tags
 
 | Tag | Syntax | Description |
 |---|---|---|
-| `if` | `{% if cond %}...{% elif cond %}...{% else %}...{% endif %}` | Conditional |
-| `for` | `{% for item in list %}...{% endfor %}` | Loop (with `loop.index`, `loop.first`, `loop.last`) |
-| `block` | `{% block name %}...{% endblock %}` | Named block (for template inheritance) |
+| `if` | `{% if c %}…{% elif c %}…{% else %}…{% endif %}` | Conditional |
+| `for` | `{% for item in list %}…{% endfor %}` | Loop (`loop.index`, `loop.first`, `loop.last`) |
+| `block` | `{% block name %}…{% endblock %}` | Named block (inheritance) |
 | `extends` | `{% extends "layout.html" %}` | Template inheritance |
 | `include` | `{% include "partial.html" %}` | Include partial |
 | `set` | `{% set name = value %}` | Set variable |
-| `macro` | `{% macro name(args) %}...{% endmacro %}` | Define macro |
-| `call` | `{% call macro(args) %}...{% endcall %}` | Call macro with content |
+| `macro` | `{% macro name(args) %}…{% endmacro %}` | Define macro |
+| `call` | `{% call macro(args) %}…{% endcall %}` | Call macro with body |
 | `import` | `{% import "macros.html" as name %}` | Import macros |
-| `from` | `{% from "macros.html" import name %}` | Import specific macro |
-| `raw` | `{% raw %}...{% endraw %}` | Literal content (no parsing) |
-| `filter` | `{% filter name %}...{% endfilter %}` | Apply filter to block |
+| `from` | `{% from "macros.html" import name %}` | Import one macro |
+| `raw` | `{% raw %}…{% endraw %}` | Literal, unparsed content |
+| `filter` | `{% filter name %}…{% endfilter %}` | Apply filter to block |
 
 ### Built-in Filters
 
-| Filter | Description |
-|---|---|
-| `capitalize` | Capitalize first character |
-| `lower` / `upper` | Case conversion |
-| `title` | Title case |
-| `trim` | Strip whitespace |
-| `safe` | Mark as safe (no escaping) |
-| `escape` / `e` | HTML-escape |
-| `striptags` | Remove HTML tags |
-| `truncate(n)` | Truncate to N characters |
-| `wordcount` | Count words |
-| `replace(a, b)` | String replace |
-| `slugify` | URL-safe slug |
-| `urlencode` | URL-encode |
-| `format` | String format |
-| `indent(n)` | Indent lines |
-| `center(n)` | Center text |
-| `int` / `float` | Type conversion |
-| `abs` | Absolute value |
-| `length` | List length |
-| `reverse` | Reverse list |
-| `first` / `last` | First/last item |
-| `join(sep)` | Join list with separator |
-| `sort` | Sort list |
-| `slice(start, end)` | Slice list |
-| `batch(n)` | Batch list into chunks of N |
-| `groupby(attr)` | Group by attribute |
-| `selectattr(attr, test)` | Filter list by attribute |
-| `rejectattr(attr, test)` | Reject by attribute |
-| `items` | Dict to (key, value) pairs |
-| `dictsort` | Sort dict by key |
-| `default(d)` / `d` | Default value |
-| `date(format)` | Date formatting |
-| `urlize` | Convert URLs to links |
+`capitalize`, `lower`, `upper`, `title`, `trim`, `safe`, `escape`/`e`, `striptags`, `truncate(n)`, `wordcount`, `replace(a, b)`, `slugify`, `urlencode`, `format`, `indent(n)`, `center(n)`, `int`, `float`, `abs`, `round`, `length`, `reverse`, `first`, `last`, `join(sep)`, `sort`, `slice(start, end)`, `batch(n)`, `groupby(attr)`, `selectattr(attr, test)`, `rejectattr(attr, test)`, `items`, `dictsort`, `default(d)`/`d`, `urlize`.
 
-### Custom Filters (Registered by Zest)
+### Custom Filters (Zest, `zest` mode only)
 
 | Filter | Description |
 |---|---|
-| `pages_by_tag(tag)` | Filter all pages by tag |
-| `recent(n)` | Get N most recent pages |
-| `by_collection(name)` | Filter by collection name |
-| `search(query)` | Full-text search across pages |
+| `pages_by_tag(tag)` | All pages carrying `tag` |
+| `recent(n)` | `n` most recent pages (by date desc) |
+| `by_collection(name)` | Pages in collection `name` (first URL segment) |
+| `search(query)` | Case-insensitive title search |
 | `where(attr, value)` | Generic attribute filter |
 
-### Context Variables in Nunjucks
+### Context Variables
 
-When using Nunjucks layouts, the following context variables are available:
+When rendering a layout, the engine injects:
 
 | Variable | Type | Description |
 |---|---|---|
-| `content` | string | Page body HTML |
-| `page.content` | string | Same as content |
-| `page.url` | string | Page URL |
-| `page.date` | string | Page date |
-| `page.tags` | string[] | Page tags as array |
-| `pages` | object[] | All site pages (for iteration) |
-| `tags` | object | All site tags (for iteration) |
-| `collections` | object | All collections (for iteration) |
-| `site.*` | varies | Site config and global data |
-| Include names | string | Each include as its own variable |
+| `content` / `page.content` | string | Page body HTML |
+| `page.url` / `page.date` / `page.tags` / `page.title` / `page.description` | varies | Page metadata |
+| `pages` | object[] | All site pages |
+| `tags` | object | All site tags → pages |
+| `collections` | object | All collections → pages |
+| `site.*` | varies | Site config + global data |
+| include names | string | Each include as its own variable |
 
 ---
 
-## Template Compatibility
+## Template Compatibility Layer
 
-Zest can convert several template formats to Nunjucks automatically:
+Zest converts several formats to Nunjucks input automatically (see `TemplateCompat`, `HamlConverter`, `PugConverter`, `HandlebarsMustacheConverter`):
 
 | Format | Extension | Conversion |
 |---|---|---|
-| Liquid | `.liquid` | `{{ }}` → same, `{% %}` → same, basic tag mapping |
+| Liquid | `.liquid` | `{{ }}` keeps; `{% %}` maps to Nunjucks tags |
 | Handlebars | `.hbs` | `{{#each}}`, `{{#if}}`, `{{> partial}}` → Nunjucks |
 | Mustache | `.mustache` | `{{#section}}`, `{{^inverted}}`, `{{> partial}}` → Nunjucks |
-| HAML | `.haml` | Experimental: indentation-based → HTML |
-| Pug/Jade | `.pug` | Experimental: indentation-based → HTML |
+| HAML | `.haml` | Indentation-based → HTML, then Nunjucks |
+| Pug | `.pug` | Indentation-based → HTML, then Nunjucks |
 | WebC | `.webc` | Treated as Nunjucks directly |
 
-Conversion is applied before the Nunjucks engine renders the template. The mapping is defined in `TemplateCompat` and handled by `HamlConverter`, `PugConverter`, and `HandlebarsMustacheConverter`.
+> HAML/Pug conversion supports implicit `div` (`.class`, `#id`), inline classes/ids, inline `= expr` → `{{ expr }}`, and real tag-name closing for nested structure.
 
 ---
 
-## Markdown-Only and HTML-Only Strategies
+## Per-Extension Strategy
 
 | Extension | Strategy |
 |---|---|
-| `.md`, `.markdown` | `MarkdownOnly` — rendered through the Markdown engine |
-| `.html`, `.htm` | `HtmlOnly` — passed through directly (Nunjucks-preprocessed if `{{ }}` detected) |
-| `.njk`, `.liquid`, `.hbs`, `.mustache`, `.webc` | `Nunjucks` — rendered through Nunjucks engine |
-| `.haml`, `.pug` | `ConvertThenNunjucks` — converted then rendered through Nunjucks |
+| `.md`, `.markdown` | Rendered through the Markdown engine (frontmatter stripped) |
+| `.html`, `.htm` | Passed through directly; Nunjucks-preprocessed only if `{{ }}`/`{% %}` detected |
+| `.njk`, `.liquid`, `.hbs`, `.mustache`, `.webc` | Rendered through the Nunjucks engine |
+| `.haml`, `.pug` | Converted, then rendered through the Nunjucks engine |
 
----
+### `.html` Preprocessing (11ty-style)
 
-## `.html` File Preprocessing (11ty-Style)
-
-Like Eleventy preprocesses `.html` through Liquid, Zest preprocesses `.html` files through Nunjucks when they contain `{{ }}` or `{% %}` syntax. This allows `.html` files in the content directory to use template variables and includes directly.
+Like Eleventy preprocesses `.html` through Liquid, Zest preprocesses `.html` files through the **Nunjucks** engine when they contain `{{ }}` or `{% %}` syntax. This lets content-directory `.html` files use template variables and includes directly.

@@ -279,6 +279,7 @@ Breakpoints: `@sm`, `@md`, `@lg`, `@xl`, `@2xl`.
 @use "zest:gradients";
 @use "zest:filters";
 @use "zest:layout";
+@use "zest:composition";
 @use "zest:all";
 ```
 
@@ -306,6 +307,9 @@ Filter, backdrop-filter, transform scale/skew utilities.
 
 ### `zest:layout`
 Container, aspect-ratio, object-fit, column-count layout utilities.
+
+### `zest:composition`
+Composable utility groups (stack, cluster, sidebar, centered) for layout composition.
 
 ### `zest:all`
 Includes all of the above.

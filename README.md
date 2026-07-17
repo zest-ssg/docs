@@ -60,8 +60,8 @@ project/
 | `.liquid` | Liquid template (converted to Nunjucks) |
 | `.hbs`, `.mustache` | Handlebars/Mustache (converted to Nunjucks) |
 | `.webc` | WebC template (treated as Nunjucks) |
-| `.haml` | HAML (experimental conversion) |
-| `.pug` | Pug/Jade (experimental conversion) |
+| `.haml` | HAML (auto-converted to HTML → Nunjucks) |
+| `.pug` | Pug/Jade (auto-converted to HTML → Nunjucks) |
 | `.html`, `.htm` | Native HTML (preprocessed through Nunjucks if `{{ }}` or `{% %}` detected) |
 | `.zcss` | ZCSS stylesheet (compiled to `.css`) |
 

@@ -341,7 +341,7 @@ In templates:
 
 ## `ContentMeta` Fields (Frontmatter)
 
-Page metadata is parsed from three formats (in priority order: TOML > HTML comments > F# comments). For `.zest.fsx` files, the **F# comment header** format is the primary and recommended approach.
+Page metadata is parsed by `MetaParser` from three formats. **TOML (`+++`) is always tried first.** If no TOML block is present, the fallback parser depends on the file extension: *template* extensions (`.njk`, `.liquid`, `.hbs`, `.mustache`, `.webc`, `.haml`, `.pug`) use the **HTML-comment** parser; all other extensions (`.zest.fsx`, `.fsx`, `.md`, …) use the **F#-comment** parser. For `.zest.fsx` files the **F# comment header** format is therefore the primary and recommended approach.
 
 | Field | TOML Key | F# Comment Key | Description |
 |---|---|---|---|
