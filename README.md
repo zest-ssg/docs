@@ -20,6 +20,7 @@ Zest consists of four layered assemblies:
 - **F#-native CSS DSL** — `stylesheet { }` CE with dot-notation selectors, 200+ typed property functions, pseudo-classes, combinators, and at-rules
 - **Multi-template support** — Native `{{ placeholder }}` syntax, full Nunjucks engine, plus converters for Liquid, Handlebars/Mustache, HAML, and Pug
 - **Markdown support** — `.md` files are rendered through a built-in Markdown engine with frontmatter
+- **Inline Markdown** — The `md` helper drops Markdown straight into a `.zest.fsx` page, mixed with the F# HTML DSL (see `dsl-api.md`)
 - **Collections & pagination** — Page query APIs, tag clouds, related pages, grouped pages by year
 - **SEO & feeds** — Meta tags, Open Graph, Twitter Cards, RSS 2.0, Atom 1.0, Sitemap XML
 - **Scoped CSS** — Component-level style isolation via auto-generated data attributes

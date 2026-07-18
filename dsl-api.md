@@ -281,6 +281,27 @@ open DslSugar
 open DslUtilities
 ```
 
+### Inline Markdown
+
+| Function | Signature | Description |
+|---|---|---|
+| `md` | `markdown: string -> string` | Render a Markdown string to an HTML `string`, for mixing Markdown prose directly into the DSL tree |
+
+`md` returns a plain `string` — identical in kind to every other DSL builder — so it drops straight into a `render [ ... ]` block (or any `string list`). It delegates to `Zest.Engine.Html.MarkdownEngine.toHtml`.
+
+```fsharp
+render [
+    divC "about" [
+        md """
+# About
+
+This is a **native template** page written in `.zest.fsx`, where Markdown
+and the F# HTML DSL live side by side.
+"""
+    ]
+]
+```
+
 ### Control Flow
 
 | Function | Signature | Description |

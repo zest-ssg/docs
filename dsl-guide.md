@@ -153,6 +153,25 @@ page {
 }
 ```
 
+### Inline Markdown
+
+The `md` helper renders a Markdown string to an HTML `string`, so you can drop
+Markdown prose straight into a `page { }` block and mix it with the DSL builders:
+
+```fsharp
+page {
+    divC "about" [
+        md """
+# About
+
+This page is written in `.zest.fsx`. **Markdown** and the F# HTML DSL
+live side by side — `md` returns a plain `string`, just like every other
+DSL builder.
+"""
+    ]
+}
+```
+
 ---
 
 ## Control Flow & Loops
