@@ -88,6 +88,48 @@ layout = "default"
 </article>
 ```
 
+### F#-script layouts (`.zest.fsx` / `.fsx`)
+
+A layout may be a **F# script** instead of HTML/Nunjucks. Files with the `.zest.fsx` or
+`.fsx` extension are evaluated by `dotnet fsi`. This lets you build the full page DOM with
+the Zest DSL (`open Zest.Dsl.Dsl` and friends are opened for you) and `printf`/`render` the
+final HTML to stdout — stdout becomes the rendered page.
+
+The page's content and metadata are injected as top-level bindings via a generated `#load`
+data file, so they are available directly in the script:
+
+| Binding | Type | Fields |
+|---|---|---|
+| `content` | `string` | The page's already-rendered body HTML |
+| `page` | anonymous record | `title`, `url`, `date` (`yyyy-MM-dd`), `slug`, `description`, `tags` (`string[]`) |
+| `site` | anonymous record | `title`, `description`, `author`, `language`, `social_github`, `social_twitter` |
+
+```fsharp
+// _layouts/page.zest.fsx
+// @layout default          ← optional nested layout (F#-style front matter)
+
+html [ lang site.language ] [
+    head [] [
+        title [] [ str (page.title + " — " + site.title) ]
+        link [ rel "stylesheet"; href "/assets/css/main.css" ]
+    ]
+    body [] [
+        main [] [
+            article [] [
+                h1 [] [ str page.title ]
+                raw content          // splice the page body
+            ]
+        ]
+        footer [] [ str ("© " + site.author) ]
+    ]
+]
+```
+
+> The layout script is evaluated with the same isolated DSL assembly used by `.zest.fsx`
+> pages, so all DSL builders, helpers, and `ZestContext` are in scope. `// @layout name`
+> (F#-style comment) declares a parent layout, exactly like the HTML-comment form used by
+> HTML layouts.
+
 ---
 
 ## Includes

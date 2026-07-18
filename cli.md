@@ -13,8 +13,8 @@ Run `zest` with no command (or `--help`) to print the command list. Global commo
 | `build` | — | Build the static site to `output_dir` |
 | `serve` | `dev` | Build + start dev server with live reload |
 | `preview` | — | Serve already-built `_site/` (no build) |
-| `init` | — | Scaffold a new project from the default template |
-| `scaffold` | — | Scaffold a project from a preset template (`blog`/`docs`/`portfolio`/`empty`) |
+| `init` | — | Scaffold a new project from the bundled starter site |
+| `scaffold` | — | Scaffold a project from a preset (`blog` = bundled starter site, `empty` = minimal config-only) |
 | `migrate` | — | Convert an existing SSG project into a Zest project |
 
 ---
@@ -102,10 +102,12 @@ zest scaffold <template> [path]
 
 | Argument | Description |
 |---|---|
-| `<template>` | Preset: `blog`, `docs`, `portfolio`, `empty` |
+| `<template>` | Preset: `blog`, `empty` |
 | `[path]` | Target directory (default: current directory) |
 
-Generates a standard Zest project (config, `_layouts/`, `content/`, `assets/`) from a bundled preset. Unknown templates fall back to a minimal structure. Prints next steps on success.
+Generates a Zest project. `blog` extracts the full bundled starter site (the same one
+`zest init` uses); `empty` writes only a minimal `_config.toml` + `_init.zest.fsx`.
+Unknown templates print an error listing the valid presets. Prints next steps on success.
 
 ---
 

@@ -1,6 +1,6 @@
 # ZCSS Preprocessor
 
-ZCSS is a SCSS-like CSS preprocessor built into Zest. `.zcss` files are compiled to `.css` during the build. ZCSS supports two syntax modes: **brace mode** (CSS/SCSS style with `{}`) and **indent mode** (Python-style indentation).
+ZCSS is a SCSS-like CSS preprocessor built into Zest. `.zcss` files are compiled to `.css` during the build. ZCSS supports three syntax modes: **brace mode** (CSS/SCSS style with `{}`), **indent mode** (Python-style indentation), and **bracket mode** (F#-style with `[ ]`).
 
 ## Syntax Modes
 
@@ -42,6 +42,53 @@ a
   &:hover
     color: darken($primary, 10%)
 ```
+
+### Bracket Mode (F#-style)
+
+Detection is automatic — if the file has **no `{`** but contains a block opened by a
+**whitespace-prefixed `[`** (e.g. `selector [ … ]`), bracket mode is used. In this mode
+the square brackets are treated as **equivalent to `{ }`** for block delimiters and are
+rewritten to braces before reuse of the brace parser, so every feature available in brace
+mode (nesting, `&`, `@media`, `@if`, etc.) works identically.
+
+> **Attribute-selector safety:** only brackets *preceded by whitespace* (or at line start)
+> and *followed by whitespace / end-of-line* are treated as blocks. `a[href]` is therefore
+> left untouched and never mistaken for a block opener.
+
+Bracket mode also accepts F#-flavored declarations:
+
+- `let name = value` — define a variable (equivalent to `$name: value`).
+- `prop = value` — property declarations may use `=` instead of `:` (`:` still works).
+
+```scss
+let primary = #4f46e5
+let primaryDark = primary |> darken(8%)
+
+.btn [
+  color = white
+  background = primary
+  &:hover [
+    background = primaryDark
+  ]
+]
+```
+
+#### Color pipes (`|>`)
+
+`|>` is supported as a color pipeline: `color |> fn(args)` rewrites to `fn(color, args)`,
+so you can chain the [color functions](#color-functions) above:
+
+```scss
+let heroAccent = primary |> lighten(22%)
+.card [
+  border-color = primary |> transparentize(0.3)
+]
+```
+
+> **Pitfall:** the pipe is split on the whole `|>` token and does **not** understand
+> nested parentheses. Do **not** place a `|>` inside a function argument, e.g.
+> `linear-gradient(135deg, a, b |> lighten(10%))` will be misparsed. Instead precompute the
+> value with its own `let` binding first (as shown with `heroAccent` above).
 
 ---
 
