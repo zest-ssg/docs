@@ -97,13 +97,16 @@ All color functions operate on hex colors:
 
 ### Math Expressions
 
-Math expressions are evaluated in property values:
+Math is evaluated **only inside an explicit `calc(...)` wrapper** — matching
+native CSS, where `calc()` is the sole scope for arithmetic and avoids
+mis-parsing CSS shorthand separators (e.g. the `/` in `font: 16px/1.65`)
+as operators. Every other value is passed through untouched.
 
 ```scss
 .container {
-  width: $max-width - 2 * $spacing;
-  padding: $spacing / 2;
-  margin: ($spacing * 2) + 1rem;
+  width: calc($max-width - 2 * $spacing);
+  padding: calc($spacing / 2);
+  margin: calc(($spacing * 2) + 1rem);
 }
 ```
 
