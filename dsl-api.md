@@ -74,6 +74,56 @@ Automatically opened in scripts. All functions return `string` typed HTML.
 | `th` | `children: string list -> string` |
 | `td` | `children: string list -> string` |
 
+### Description Lists & Additional Semantic Elements
+
+| Function | Signature | Description |
+|---|---|---|
+| `dl` / `dt` / `dd` | `children: string list -> string` | Description list elements |
+| `aside` | `children: string list -> string` | |
+| `figure` / `figcaption` | `children: string list -> string` | |
+| `address` | `children: string list -> string` | |
+| `cite` / `q` | `children: string list -> string` | |
+| `sub` / `sup` | `children: string list -> string` | Subscript / superscript |
+| `kbd` / `samp` / `dfn` | `children: string list -> string` | Keyboard / sample / definition |
+| `b` / `i` / `u` / `s` | `children: string list -> string` | Bold / italic / underline / strikethrough |
+| `wbr` | `unit -> string` | Word-break opportunity (void) |
+| `time` | `datetime: string -> children: string list -> string` | `<time datetime="...">` |
+| `summary` / `details` | `children: string list -> string` | Disclosure widgets |
+| `progress` / `meter` / `output` | `children: string list -> string` | |
+| `figureC` | `cls: string -> children: string list -> string` | Figure with class |
+| `timeC` | `cls: string -> datetime: string -> children: string list -> string` | Time with class + datetime |
+| `detailsC` / `dlC` / `citeC` | `cls: string -> children: string list -> string` | Class-shortcut variants |
+
+### Attribute Sugar
+
+Concise builders for common attributes:
+
+| Function | Signature | Description |
+|---|---|---|
+| `cls` | `string -> string` | `class="…"` |
+| `id'` | `string -> string` | `id="…"` |
+| `role` | `string -> string` | `role="…"` (ARIA landmark) |
+| `href` / `src` / `type'` | `string -> string` | Common attributes |
+| `name'` / `value'` / `placeholder'` | `string -> string` | Form attributes |
+| `title'` / `alt` / `lang` | `string -> string` | |
+| `width'` / `height'` | `string -> string` | Media dimensions |
+| `tabindex` | `string -> string` | |
+| `data'` | `key: string -> value: string -> string` | `data-KEY="VALUE"` |
+| `aria` | `key: string -> value: string -> string` | `aria-KEY="VALUE"` |
+| `boolAttr` | `name: string -> on: bool -> string` | Boolean attribute (present/omitted) |
+
+### General-Purpose Constructors & Helpers
+
+| Function | Signature | Description |
+|---|---|---|
+| `el` | `tag: string -> pairs: (string*string) list -> children: string list -> string` | Build any element from key/value attribute pairs |
+| `elVoid` | `tag: string -> pairs: (string*string) list -> string` | Void element from pairs |
+| `attrsOf` | `pairs: (string*string) list -> string` | Render attribute pairs to an attribute string |
+| `comment` | `body: string -> string` | `<!-- … -->` HTML comment |
+| `nbsp` | `string` | `&nbsp;` entity |
+| `fragment` | `children: string list -> string` | Concatenate without a wrapper element |
+| `fragmentLines` | `children: string list -> string` | Concatenate with newline separators |
+
 ### Document Structure
 
 | Function | Signature | Description |
@@ -202,6 +252,43 @@ With class variants: `formC`, `buttonC`, `labelC`.
 | `renderIf` | `cond: bool -> node: string -> fallback: string -> string` |
 | `renderOpt` | `v: 'a option -> f: ('a -> string) -> string` |
 
+### Navigation Components
+
+| Function | Signature | Description |
+|---|---|---|
+| `navLink` | `url: string -> label: string -> isActive: bool -> string` | Link with optional `active` class |
+| `navList` | `items: (string * string * bool) list -> string` | `<nav><ul>` from (url, label, isActive) triples |
+| `breadcrumb` | `items: (string * string) list -> string` | Breadcrumb trail (last item = current page) |
+
+### Badge & Tag Components
+
+| Function | Signature | Description |
+|---|---|---|
+| `tagBadges` | `baseUrl: string -> tags: string list -> string` | Tag list as clickable badge links |
+| `badgeC` | `variant: string -> text: string -> string` | Single badge span with variant class |
+
+### Media & Icon Components
+
+| Function | Signature | Description |
+|---|---|---|
+| `icon` | `name: string -> string` | `<span class="icon icon-NAME" aria-hidden="true">` |
+| `figureResponsive` | `src -> alt -> caption -> widths: int list -> string` | `<figure>` with srcset for art-directed images |
+| `videoEmbed` | `url: string -> string` | Responsive 16:9 iframe wrapper |
+
+### Status Components
+
+| Function | Signature | Description |
+|---|---|---|
+| `progressBar` | `percent: int -> label: string -> string` | Labelled `<progress value max=100>` |
+| `meterBar` | `value: float -> optimum: float -> string` | `<meter>` gauge |
+
+### Social & Contact
+
+| Function | Signature | Description |
+|---|---|---|
+| `socialLink` | `platform: string -> url: string -> string` | Social link with icon class + sr-only label |
+| `contactList` | `items: (string * string) list -> string` | `<dl>` of label/value pairs |
+
 ---
 
 ## Module: `DslSugar` (Conditionals, Loops, Pipelines)
@@ -273,6 +360,36 @@ open DslSugar
 | `float_str` | `format: string -> float -> string` |
 | `bool_str` | `bool -> string` |
 
+### Option Rendering
+
+| Function | Signature | Description |
+|---|---|---|
+| `opt_str` | `string option -> string` | `Some s` → `s`, `None` → `""` |
+| `opt_or` | `fallback: string -> string option -> string` | `Some s` → `s`, `None`/empty → fallback |
+| `opt_map` | `('a -> string) -> 'a option -> string` | Apply function only for `Some` |
+| `opt_when` | `'a option -> content: string -> string` | Render content only when `Some` |
+
+### Joining Helpers
+
+| Function | Signature | Description |
+|---|---|---|
+| `join_lines` | `string list -> string` | Join with newlines |
+| `join_comma` | `string list -> string` | Join with `", "` |
+| `join_with` | `sep: string -> string list -> string` | Join with custom separator |
+| `intersperse` | `sep: string -> string list -> string` | Separator BETWEEN items (no trailing) |
+
+### Text Formatting
+
+| Function | Signature | Description |
+|---|---|---|
+| `truncate_str` | `maxLen: int -> string -> string` | Truncate with ellipsis (`…`) if cut |
+| `pad_right` | `width: int -> string -> string` | Right-pad with spaces |
+| `pad_left` | `width: int -> string -> string` | Left-pad with spaces |
+| `pluralize` | `count: int -> singular: string -> string` | `"3 items"` (appends `s`) |
+| `pluralize_with` | `count: int -> singular: string -> plural: string -> string` | Explicit plural form |
+| `capitalize` | `string -> string` | Uppercase first character |
+| `titleize` | `string -> string` | Kebab/snake → Title Case (`"post-list"` → `"Post List"`) |
+
 ---
 
 ## Module: `DslUtilities` (Control Flow & String Interpolation)
@@ -286,6 +403,34 @@ open DslUtilities
 | Function | Signature | Description |
 |---|---|---|
 | `md` | `markdown: string -> string` | Render a Markdown string to an HTML `string`, for mixing Markdown prose directly into the DSL tree |
+| `mdDedent` | `markdown: string -> string` | Like `md`, but first strips common leading indentation — so indented triple-quoted bodies render correctly (fixes heading/code-block issues) |
+| `dedent` | `text: string -> string` | Strip the common leading whitespace from a triple-quoted string (blank lines preserved, not counted) |
+
+### Inline JavaScript (L2)
+
+| Function | Signature | Description |
+|---|---|---|
+| `js` | `code: string -> string` | Embed an inline `<script>` block. Mirrors `md` triple-quote ergonomics; body is dedented and passed through verbatim (no F# validation of JS syntax) |
+| `jsModule` | `code: string -> string` | Like `js`, but emits `<script type="module">` for ES module scripts (`import`/`export`) |
+
+```fsharp
+render [
+    js """
+        document.querySelector('.btn').addEventListener('click', () => alert('hi'))
+    """
+]
+```
+
+### JSON Data Injection (L3)
+
+| Function | Signature | Description |
+|---|---|---|
+| `jsonBlock` | `name: string -> data: obj -> string` | Serialise F# data to JSON and inject as `<script>window.NAME = JSON</script>`. Uses `System.Text.Json` for escaping + `jsSafe` to neutralise `</script>`-breaking sequences. Type-safe alternative to `sprintf`-built JS |
+
+```fsharp
+jsonBlock "__CFG__" {| theme = "dark"; count = 10; tags = [|"a";"b"|] |}
+// → <script>window.__CFG__ = {"theme":"dark","count":10,"tags":["a","b"]}</script>
+```
 
 `md` returns a plain `string` — identical in kind to every other DSL builder — so it drops straight into a `render [ ... ]` block (or any `string list`). It delegates to `Zest.Engine.Html.MarkdownEngine.toHtml`.
 

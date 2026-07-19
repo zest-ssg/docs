@@ -159,6 +159,42 @@ as operators. Every other value is passed through untouched.
 
 Unit-preserving arithmetic: same-unit operations keep the unit, mixed units use the first operand's unit.
 
+**Unit-incompatible `calc()` passes through:** when `+`/`-` operands have
+different, non-empty units (e.g. `calc(100% - 2rem)`), the expression cannot
+be resolved at build time — it is left as `calc(100% - 2rem)` for the browser
+to evaluate at runtime. Only same-unit or unitless operations are pre-computed.
+
+### CSS Function Passthrough
+
+ZCSS recognises 50+ CSS function names (`calc`, `clamp`, `min`, `max`,
+`color-mix`, `linear-gradient`, `radial-gradient`, transform functions like
+`rotate`/`scale`/`translate`, filter functions like `blur`/`brightness`, and
+color-space keywords like `srgb`/`display-p3`/`oklch`). These are never
+resolved as variables, so you can safely define a `let max = …` without
+breaking `max(100px, 10vw)`:
+
+```scss
+let primary = #3b82f6
+
+.btn {
+  color: color-mix(in srgb, var(--accent), white 30%);
+  width: clamp(200px, 50vw, 800px);
+  transform: rotate(45deg) scale(1.2);
+  background: linear-gradient(to right, primary, transparent);
+}
+```
+
+### Result Caching & Error Handling
+
+ZCSS processing is pure (source → CSS), so results are cached by a content
+hash (`FNV-1a`). During dev-server rebuilds triggered by non-ZCSS changes,
+unchanged `.zcss` files are served from cache instantly. The cache is cleared
+on full rebuild (`TemplateManager.clearCaches()`).
+
+Malformed input (unclosed braces, parse errors) is caught gracefully — the
+processor returns a `/* ZCSS ERROR: … */` comment instead of crashing the
+build.
+
 ### Built-in Functions
 
 | Function | Description |

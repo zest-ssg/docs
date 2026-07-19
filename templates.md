@@ -217,8 +217,40 @@ The built-in engine (`NunjucksEngine`) implements a compatible subset of Nunjuck
 | `pages_by_tag(tag)` | All pages carrying `tag` |
 | `recent(n)` | `n` most recent pages (by date desc) |
 | `by_collection(name)` | Pages in collection `name` (first URL segment) |
+| `by_collection(name, exclude_index)` | Same, but drops the `/<col>/` index page when `exclude_index` is `true` |
 | `search(query)` | Case-insensitive title search |
 | `where(attr, value)` | Generic attribute filter |
+
+> The `int` filter now handles decimal strings correctly: `{{ "1.245" \| int }}`
+> → `1` (truncates toward zero, matching Nunjucks semantics). Previously
+> `"1.245"` returned `0`.
+
+> **Pipe precedence:** `|` (filter pipe) has the lowest precedence — lower
+> than arithmetic, comparison, and logic. So `{{ a / b \| round }}` parses as
+> `{{ (a / b) \| round }}`, not `{{ a / (b \| round) }}`. Pipes inside filter
+> arguments (`{{ x \| default(y \| default('z')) }}`) and inside parentheses
+> (`{{ (content \| wordcount) + 1 }}`) are evaluated correctly.
+
+### TOML Data in Nunjucks
+
+`_data/*.toml` files are auto-loaded as `site.<filename>`. After the engine
+upgrade, TOML arrays and nested tables are preserved as native .NET types, so
+Nunjucks can iterate them directly:
+
+```toml
+# _data/nav.toml
+[[items]]
+label = "Home"
+url = "/"
+weight = 1
+```
+
+```njk
+<!-- Iterate directly — no manual pre-rendering needed -->
+{% for item in site.nav.items | sort_by("weight") %}
+  <a href="{{ item.url }}">{{ item.label }}</a>
+{% endfor %}
+```
 
 ### Context Variables
 
@@ -243,13 +275,45 @@ Zest converts several formats to Nunjucks input automatically (see `TemplateComp
 | Format | Extension | Conversion |
 |---|---|---|
 | Liquid | `.liquid` | `{{ }}` keeps; `{% %}` maps to Nunjucks tags |
-| Handlebars | `.hbs` | `{{#each}}`, `{{#if}}`, `{{> partial}}` → Nunjucks |
+| Handlebars | `.hbs` | `{{#each}}`, `{{#if}}`, `{{#with}}`, `{{else if}}`, `{{> partial}}` → Nunjucks |
 | Mustache | `.mustache` | `{{#section}}`, `{{^inverted}}`, `{{> partial}}` → Nunjucks |
-| HAML | `.haml` | Indentation-based → HTML, then Nunjucks |
-| Pug | `.pug` | Indentation-based → HTML, then Nunjucks |
+| HAML | `.haml` | Indentation-based → HTML (with `:css`/`:javascript` filters), then Nunjucks |
+| Pug | `.pug` | Indentation-based → HTML (with `include`), then Nunjucks |
 | WebC | `.webc` | Treated as Nunjucks directly |
 
-> HAML/Pug conversion supports implicit `div` (`.class`, `#id`), inline classes/ids, inline `= expr` → `{{ expr }}`, and real tag-name closing for nested structure.
+### Converter Features
+
+**HAML converter:**
+- Tag/class/id syntax: `%tag.class#id`, `.class` (implicit div), `#id`
+- Inline attributes: `%tag{key: "value", key2: "value2"}`
+- Filters: `:css` → `<style>`, `:javascript` → `<script>`, `:markdown` → passthrough
+- `= expr` → `{{ expr }}`, `- code` stripped, `/ comment` → `<!-- -->`
+- HTML-escaped text content and attribute values (XSS-safe)
+- HTML5 void elements (`<br>` not `<br />`)
+- Tabs and arbitrary-width indentation supported
+
+**Pug converter:**
+- Tag/class/id syntax: `tag.class#id`, `.class` (implicit div), `#id`
+- Parenthesised attributes: `tag(attr="value", attr2="value2")`
+- `include path` → `{% include "path" %}`
+- `doctype` → `<!DOCTYPE html>`
+- `| text` literal text, `= expr` → `{{ expr }}`
+- HTML-escaped, HTML5 void elements, tab/any-width indentation
+
+**Handlebars converter:**
+- `{{#each list as |item|}}` → `{% for item in list %}`
+- `{{#if}}`/`{{else if cond}}`/`{{else}}`/`{{/if}}` → `{% if %}`/`{% elif %}`/`{% else %}`/`{% endif %}`
+- `{{#unless cond}}`/`{{else}}`/`{{/unless}}` → `{% if not cond %}`/`{% else %}`/`{% endif %}`
+- `{{#with obj}}`/`{{/with}}` → `{% set __with_ctx = obj %}`/`{% endset %}`
+- `{{> partial}}` → `{% include "partial.njk" %}`
+- `{{this}}`/`{{this.prop}}` → `{{ item }}`/`{{ item.prop }}` (single pass, no double-processing)
+- `{{lookup obj "key"}}` → `{{ obj["key"] }}`
+- `{{{ safe }}}` → `{{ safe | safe }}`
+- `{{@index}}`/`{{@first}}`/`{{@last}}` → `{{ loop.index }}`/`{{ loop.first }}`/`{{ loop.last }}`
+- `{{! comment }}` → `{# comment #}`
+
+> All converter results are cached by content hash — unchanged template files
+> are not re-converted on dev-server rebuilds.
 
 ---
 

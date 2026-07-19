@@ -16,12 +16,13 @@ Zest consists of four layered assemblies:
 ## Key Features
 
 - **F# computation expression DSL** — Write pages with `// @key value` frontmatter headers + `page { }` CE for full IDE support
-- **ZCSS preprocessor** — SCSS-like CSS with variables, mixins, `@extend`, `@apply`, color functions, responsive shorthand, and indentation syntax
+- **ZCSS preprocessor** — SCSS-like CSS with variables, mixins, `@extend`, `@apply`, color functions, responsive shorthand, and indentation syntax; CSS function passthrough (`calc`/`color-mix`/`clamp`), unit-safe `calc()` evaluation, and content-hash result caching
 - **F#-native CSS DSL** — `stylesheet { }` CE with dot-notation selectors, 200+ typed property functions, pseudo-classes, combinators, and at-rules
-- **Multi-template support** — Native `{{ placeholder }}` syntax, full Nunjucks engine, plus converters for Liquid, Handlebars/Mustache, HAML, and Pug
-- **Markdown support** — `.md` files are rendered through a built-in Markdown engine with frontmatter
-- **Inline Markdown** — The `md` helper drops Markdown straight into a `.zest.fsx` page, mixed with the F# HTML DSL (see `dsl-api.md`)
-- **Collections & pagination** — Page query APIs, tag clouds, related pages, grouped pages by year
+- **Multi-template support** — Native `{{ placeholder }}` syntax, full Nunjucks engine, plus converters for Liquid, Handlebars/Mustache, HAML, and Pug (with HTML escaping, filter blocks, `{{#with}}`/`{{else if}}`, and conversion caching)
+- **Inline JavaScript** — `js """..."""` blocks mirror `md` triple-quote ergonomics; `jsonBlock` injects type-safe F#→JS data via JSON
+- **Markdown support** — `.md` files rendered through a built-in Markdown engine with frontmatter; `md`/`mdDedent` helpers for inline Markdown in `.zest.fsx`
+- **Collections & pagination** — Page query APIs, tag clouds, related pages, grouped pages by year; `by_collection` with optional index exclusion
+- **TOML data** — `_data/*.toml` arrays and nested tables preserved as native types, directly iterable in Nunjucks templates
 - **SEO & feeds** — Meta tags, Open Graph, Twitter Cards, RSS 2.0, Atom 1.0, Sitemap XML
 - **Scoped CSS** — Component-level style isolation via auto-generated data attributes
 - **Dev server** — `zest serve` with live reload via WebSocket, file watching, and auto-rebuild
