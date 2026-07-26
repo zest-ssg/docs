@@ -114,6 +114,47 @@ engine = "nunjucks"
 compatibility = "zest"   # "strict" | "zest"
 ```
 
+### Theme — `[theme]`
+
+Load a theme from `_themes/`, a Git repository, a ZIP URL, or a local path. Theme files act as **fallbacks**: project-level layouts/includes/assets with the same name overwrite theme files. See [themes.md](themes.md) for a detailed guide.
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `name` | string | `""` | Theme directory name (e.g. `"minima"`). Empty = no theme. |
+| `source` | string | `"local"` | `"local"` \| `"git"` \| `"url"` \| `"path"` |
+| `git` | string | `""` | Git repository URL (`source = "git"`) |
+| `branch` | string | `"main"` | Git branch (`source = "git"`) |
+| `tag` | string | `""` | Git tag, overrides `branch` (`source = "git"`) |
+| `url` | string | `""` | ZIP download URL (`source = "url"`) |
+| `path` | string | `""` | Local directory path (`source = "path"`) |
+
+**Examples:**
+
+```toml
+# Local theme (from _themes/minima/)
+[theme]
+name = "minima"
+
+# Git theme (cloned to .zest/themes/minima/)
+[theme]
+name = "minima"
+source = "git"
+git = "https://github.com/zest-ssg/zest-theme-minima.git"
+tag = "v2.1.0"
+
+# URL theme (ZIP archive)
+[theme]
+name = "minima"
+source = "url"
+url = "https://github.com/zest-ssg/zest-theme-minima/archive/refs/tags/v2.1.0.zip"
+
+# Path theme (local development)
+[theme]
+name = "minima"
+source = "path"
+path = "../zest-theme-minima"
+```
+
 ---
 
 ## Complete Example
@@ -191,6 +232,13 @@ engine = "native"
 
 [template.nunjucks]
 compatibility = "zest"
+
+# ── Theme ──────────────────────────────────────────────
+[theme]
+# name = "minima"
+# source = "local"       # "local" | "git" | "url" | "path"
+# git = ""               # (only when source = "git")
+# tag = ""               # (optional, overrides branch)
 ```
 
 ---

@@ -13,6 +13,8 @@ Partials and Markdown/HTML pages are always routed through the active engine. 11
 
 Layouts live in `_layouts/` and wrap a page's rendered body. The layout is selected via `page { layout "name" }` or frontmatter `layout = "name"` (the **name** is the file stem, extension omitted).
 
+When a [theme](themes.md) is active, theme `_layouts/` files serve as fallbacks — project-level layouts with the same name take priority.
+
 ```
 _layouts/
 ├── default.njk       → layout "default"
