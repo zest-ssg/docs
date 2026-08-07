@@ -1,0 +1,55 @@
+# Zest site configuration — oxygen starter
+[site]
+title = "My Zest Blog"
+description = "A fast, minimal blog built with Zest SSG."
+url = "https://example.com"
+author = "Zest User"
+language = "en"
+
+# ── HTML formatting: pretty-print output with indentation ──
+enable_html_formatting = true
+
+# ── CSS/JS formatting: pretty-print with indentation ──
+enable_asset_formatting = true
+
+[template]
+# The `engine` value is a PURE ANNOTATION for the primary template language.
+# It has NO effect on the build — layout routing is decided by file extension:
+#   native   → primary language is .zest.fsx (F# script templates)
+#   nunjucks → primary language is Nunjucks (.njk / .html layouts)
+#   liquid   → primary language is Liquid (.liquid layouts)
+# ...any value is accepted; it only labels the template language.
+engine = "native"
+
+# ── Theme ────────────────────────────────────────────
+# The oxygen theme is self-contained under _themes/oxygen/.
+# Layouts, includes, locales, and assets are loaded from
+# the theme; project files with the same name take priority.
+# Theme config is declarative via _theme.toml.
+[theme]
+name = "oxygen"
+source = "local"
+
+[build]
+output = "_site"
+
+# ── File inclusion / exclusion ──────────────────────
+# Files starting with _ or . are auto-excluded.
+# Explicitly include generated files that get a _ prefix
+# from the afterBuild step (e.g. _friends.html).
+include = ["_friends.html"]
+
+# ── Page defaults: shared frontmatter for matching files ─
+[[defaults]]
+path = "posts/*"
+[defaults.values]
+layout = "post"
+
+# ── Theme colors (oxygen) ──────────────────────────────
+# Override the oxygen palette from here instead of editing the theme.
+# Every key is optional; unset values fall back to the theme defaults.
+# Supported: accent, background, color.
+[params.colors]
+# accent = "#0074d9"
+# background = "#fffffe"
+# color = "#292929"
