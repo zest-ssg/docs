@@ -1,0 +1,150 @@
+// base.zcss
+//
+// Reset, typography and shared element styling for the docs theme.
+// Everything here is content-agnostic; page structure lives in layout.zcss.
+//
+// Dependencies: tokens.zcss
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--transition), color var(--transition);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.5em;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--text);
+}
+
+h1 { font-size: 1.85rem; }
+h2 { font-size: 1.42rem; margin-top: 2rem; }
+h3 { font-size: 1.16rem; margin-top: 1.6rem; }
+h4 { font-size: 1rem; }
+
+p { margin: 0 0 1rem; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+li { margin: 0.2rem 0; }
+
+blockquote {
+  margin: 1rem 0;
+  padding: 0.4rem 1rem;
+  border-left: 3px solid var(--accent-line);
+  background: var(--bg-soft);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-soft);
+}
+
+blockquote p:last-child { margin-bottom: 0; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+// ── Code ──────────────────────────────────────────────
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--code-bg);
+  color: var(--code-key);
+  padding: 0.14em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--code-border);
+}
+
+pre {
+  position: relative;
+  margin: 1rem 0;
+  padding: 1rem 1.1rem;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+pre code {
+  display: block;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--code-text);
+  font-size: 0.86rem;
+}
+
+pre code.language-shell:before,
+pre code.language-bash:before,
+pre code.language-fsharp:before,
+pre code.language-njk:before {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  content: attr(class);
+}
+
+// ── Tables ────────────────────────────────────────────
+
+table {
+  width: 100%;
+  margin: 1rem 0 1.2rem;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th, td {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--bg-soft);
+  font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+  background: var(--bg-soft);
+}
+
+// ── Images ────────────────────────────────────────────
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}

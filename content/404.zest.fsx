@@ -11,11 +11,10 @@ open Zest.Dsl
 render [
     divC "not-found" [
         h1 [ text "404" ]
-        p [
-            text (t "notfound.message")
-            text " "
-            aHref "/" (t "notfound.back_home")
-            text "."
-        ]
+        p [ text "Page not found. " ]
+        pC "not-found__text" [ text "The page you were looking for could not be found, or it only exists in the other language." ]
+        aC "btn btn--primary" "/en/" [ text "Back to English docs" ]
+        span [ text " " ]
+        aC "btn" "/zh/" [ text "返回中文文档" ]
     ]
 ]

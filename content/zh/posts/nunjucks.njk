@@ -1,0 +1,59 @@
+<!-- @title Nunjucks -->
+<!-- @description Zest 内置完整的 Nunjucks 兼容引擎。本页本身就是一个 .njk 模板——下面所有示例都由引擎实时渲染。 -->
+<!-- @category templates -->
+<!-- @tags nunjucks, 模板 -->
+<!-- @date 2026-08-01 -->
+<h1>Nunjucks</h1>
+
+<p>
+  本页本身就是一个 <code>.njk</code> 模板。内容管线完全按<strong>文件扩展名</strong>路由——与任何配置开关无关——因此放在 <code>content/</code> 下的 <code>.njk</code> 文件会由内置的 Nunjucks 引擎求值，并带有完整站点上下文（<code>site.*</code>、<code>page.*</code>、<code>pages</code>、<code>tags</code>、<code>collections</code>）。你正在读的这段内容，就是引擎渲染本页时生成的。
+</p>
+
+<h2>变量</h2>
+<p>插值使用双花括号。这一段就是实时示例：</p>
+<p>
+  本站叫 <strong>{{ site.title }}</strong>，当前共有 <strong>{{ pages | length }}</strong> 个页面。
+</p>
+<p>若要输出字面量 <code>{{ "{{ }}" }}</code>，把它作为字符串引用即可：
+<code>{{ "{{ \"{{ site.title }}\" }}" }}</code>。</p>
+
+<h2>过滤器</h2>
+<p>过滤器用竖线串联，参数写在括号里：</p>
+{% raw %}
+<pre><code class="language-njk">{{ name | upper }}
+{{ 'zest' | capitalize }}
+{{ price | round(2) }}</code></pre>
+{% endraw %}
+<p>渲染结果：<code>{{ "zest" | upper }}</code>、<code>{{ "zest" | capitalize }}</code>。</p>
+
+<h2>标签</h2>
+<p>逻辑写在 <code>{% %}</code> 标签中。下面的 <code>if</code> 与 <code>for</code> 会针对构建期页面列表实际执行：</p>
+{% raw %}
+<pre><code class="language-njk">{% for post in pages %}{% if post.title %}
+&lt;a href="{{ post.url }}"&gt;{{ post.title }}&lt;/a&gt;
+{% endif %}{% endfor %}</code></pre>
+{% endraw %}
+<p>本页演示一个真实的 <code>if</code>：</p>
+{% if "/zh/" in page.url %}
+<p class="alert alert--info">由 <code>{{ "{% if \"/zh/\" in page.url %}" }}</code> 渲染——条件成立。</p>
+{% endif %}
+
+<h2>Raw 块</h2>
+<p>想按原文展示模板语法（就像本页的代码示例一样），请把它包在 <code>{% raw %}…{% endraw %}</code> 中：</p>
+{% raw %}
+<pre><code class="language-njk">{% raw %}
+{{ post.title }} — 不会被求值，原样输出
+{% endraw %}</code></pre>
+{% endraw %}
+<p><code>{% raw %}…{% endraw %}</code> 中的任何内容都不会被求值。</p>
+
+<h2>布局与局部</h2>
+<p>
+  布局的选定方式相同：名为 <code>default.njk</code> 的布局文件走 Nunjucks 引擎，而 <code>docs.zest.fsx</code> 会作为 F# 脚本求值。本站使用 F# 布局，因此上面的 Nunjucks 正文会被作为 <code>content</code> 字符串交给 F# 的 <code>docs</code> 布局。
+</p>
+<p>模板与布局中还支持旧式局部语法 <code>{{ include name }}</code>，它会从站点的 includes 字典中取出对应文件。</p>
+
+<h2>兼容模式</h2>
+<p>
+  <code>NunjucksCompatibility</code> 开关（默认 <code>zest</code>）会在标准 Nunjucks 之上启用 Zest 的扩展过滤器与宏。严格模式（<code>liquid</code>/<code>11ty</code>）会跳过 Zest 扩展，只保留内置过滤器——详见 <a href="configuration.html">配置</a>。
+</p>

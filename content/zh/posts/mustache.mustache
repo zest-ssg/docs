@@ -1,0 +1,42 @@
+<!-- @title Mustache -->
+<!-- @description Mustache 无逻辑模板支持：本页本身就是一个 .mustache 文件，经 Hbs 引擎渲染。 -->
+<!-- @category templates -->
+<!-- @tags zest, 模板, mustache -->
+<!-- @date 2026-08-01 -->
+{{! 本页是真实的 .mustache 模板；{{! }} 是注释，不输出 }}
+<h1>{{ page.title }}</h1>
+<p>本页本身就是一个 <code>.mustache</code> 文件。Mustache 是"无逻辑"（logic-less）模板：不含 <code>if</code> / <code>for</code> 之类的逻辑标签，渲染结果完全由数据形状决定。Zest 中 <code>.mustache</code> 文件与 <code>.hbs</code> 一样，由独立的 Hbs 引擎渲染。</p>
+
+<h2>变量</h2>
+<p>当前站点名称为 <strong>{{ site.title }}</strong>——这是 <code>&#123;&#123; site.title &#125;&#125;</code> 的真实求值结果。<code>&#123;&#123; var &#125;&#125;</code> 默认 HTML 转义，<code>&#123;&#123;&#123; var &#125;&#125;&#125;</code> 不转义。</p>
+
+<h2>区段（section）</h2>
+<p>区段由数据的真假与形状决定渲染：值为真时渲染一次，值为数组时逐项渲染。下面用 <code>page</code> 作为区段数据：</p>
+{{#page}}
+<p>当前页标题：<strong>{{ title }}</strong>（进入 <code>page</code> 上下文后直接访问 <code>&#123;&#123; title &#125;&#125;</code>）。</p>
+{{/page}}
+<p>反转区段 <code>&#123;&#123;^ … &#125;&#125;</code> 在数据为假或空时才渲染——由于 <code>page</code> 存在，下面这段不会显示：</p>
+{{^page}}
+<p>（这段只在 page 不存在时显示，因此你看不到它。）</p>
+{{/page}}
+
+<h2>核心构造</h2>
+<table>
+  <thead>
+    <tr><th>语法</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>&#123;&#123; var &#125;&#125;</code></td><td>输出变量，HTML 转义</td></tr>
+    <tr><td><code>&#123;&#123;&#123; var &#125;&#125;&#125;</code></td><td>输出变量，不转义</td></tr>
+    <tr><td><code>&#123;&#123;#section &#125;&#125; … &#123;&#123;/section &#125;&#125;</code></td><td>区段：值为真渲染一次，值为数组逐项渲染，项内可访问其字段</td></tr>
+    <tr><td><code>&#123;&#123;^inverted &#125;&#125; … &#123;&#123;/inverted &#125;&#125;</code></td><td>反转区段：值为假或空时才渲染</td></tr>
+    <tr><td><code>&#123;&#123;&gt; partial &#125;&#125;</code></td><td>渲染 partial（来自 <code>_includes/</code>）</td></tr>
+    <tr><td><code>&#123;&#123;! comment &#125;&#125;</code></td><td>注释，不输出</td></tr>
+  </tbody>
+</table>
+
+<h2>无逻辑约束</h2>
+<p>Mustache 没有 <code>{% if %}</code>、<code>{% for %}</code> 这类语句——条件与遍历都通过区段与数据自身表达。因此模板作者应把展示所需的分组、排序等准备工作放到前端数据（例如用 <code>.zest.fsx</code> 页面脚本或 <code>_init.zest.fsx</code> 组织数据），而不是塞进模板。</p>
+
+<h2>上下文</h2>
+<p>与 Handlebars 相同，模板上下文注入 <code>page.*</code>、<code>site.*</code>、<code>pages</code>、<code>tags</code>、<code>collections</code>，具体见<a href="/zh/posts/template-reference/">模板参考</a>与<a href="/zh/posts/handlebars/">Handlebars</a>。</p>

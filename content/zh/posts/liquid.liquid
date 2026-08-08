@@ -1,0 +1,53 @@
+<!-- @title Liquid -->
+<!-- @description Liquid 模板语言支持：本页本身就是一个 .liquid 文件，语法经转换后由 Nunjucks 引擎渲染。 -->
+<!-- @category templates -->
+<!-- @tags zest, 模板, liquid -->
+<!-- @date 2026-08-01 -->
+{% assign siteName = site.title %}
+{% assign totalPages = pages | size %}
+<h1>Liquid</h1>
+<p>本页本身就是一个 <code>.liquid</code> 文件：正文先由 LiquidConverter 转换为 Nunjucks 输入，再交给内置的 Nunjucks 引擎渲染。下面这段就是真实执行的结果——站点名称为 <strong>{{ siteName }}</strong>，当前共有 <strong>{{ totalPages }}</strong> 个页面。</p>
+
+<h2>工作原理</h2>
+<p><code>.liquid</code> 文件在渲染前先经 LiquidConverter 逐 token 转换（与 HAML、Pug 的转换策略一致）。Liquid 与 Nunjucks 共享输出语法、空白控制与 <code>{% %}</code> 标签模型，因此无需另起一个独立渲染器。<code>{{ expr }}</code> 输出时会被追加 <code>| safe</code>，以保留 Liquid 不自动转义的语义。</p>
+
+<h2>语法</h2>
+{% raw %}
+<pre><code class="language-liquid">{% assign total = posts | size %}
+{% if total > 0 %}
+  <ul>
+  {% for post in posts %}
+    <li>{{ post.title }}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>暂无文章。</p>
+{% endif %}</code></pre>
+{% endraw %}
+<p>若要按原文展示 Liquid 语法（就像上面的代码块），用 <code>raw</code> 标签把整个区间包起来，转换器会把该区间原样透传、不执行其中的任何标签。</p>
+
+<h2>转换映射</h2>
+{% raw %}
+<table>
+  <thead>
+    <tr><th>Liquid</th><th>Nunjucks 等价物</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>{% assign x = v %}</code> / <code>{% capture x %}…{% endcapture %}</code></td><td><code>{% set x = v %}</code> / <code>{% set x %}…{% endset %}</code></td></tr>
+    <tr><td><code>{% if %}</code> / <code>{% elsif %}</code> / <code>{% else %}</code></td><td><code>{% if %}</code> / <code>{% elif %}</code> / <code>{% else %}</code></td></tr>
+    <tr><td><code>{% unless %}</code></td><td><code>{% if not (…) %}</code></td></tr>
+    <tr><td><code>{% case %}</code> / <code>{% when %}</code> / <code>{% else %}</code></td><td><code>{% if %}</code> / <code>{% elif %}</code> 链</td></tr>
+    <tr><td><code>forloop.index</code> / <code>forloop.first</code> 等</td><td><code>loop.index</code> / <code>loop.first</code> 等</td></tr>
+    <tr><td><code>cycle 'a','b'</code>（for 内）</td><td><code>loop.cycle('a', 'b')</code></td></tr>
+    <tr><td><code>{% comment %}</code></td><td><code>{# #}</code></td></tr>
+    <tr><td><code>a contains b</code></td><td><code>a | contains(b)</code></td></tr>
+    <tr><td><code>(1..5)</code></td><td><code>range(1, 6)</code></td></tr>
+    <tr><td><code>nil</code></td><td><code>null</code></td></tr>
+  </tbody>
+</table>
+{% endraw %}
+<p>转换结果按内容哈希缓存，未变化的文件在开发服务器重建时不会重复转换。</p>
+
+<h2>限制</h2>
+<p>以下构造在 Nunjucks 语义中无法表达，<strong>刻意不支持</strong>：<code>increment</code> / <code>decrement</code> 状态、<code>tablerow</code>、<code>forloop.parentloop</code>、<code>break</code> / <code>continue</code>。未知标签会原样保留，在渲染时直接报错而不是静默产生错误输出。</p>
+<p>模板上下文（<code>page.*</code>、<code>site.*</code>、<code>pages</code>、<code>tags</code> 等）与其他引擎一致，见<a href="/zh/posts/template-reference/">模板参考</a>。</p>

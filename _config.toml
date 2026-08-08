@@ -1,9 +1,9 @@
-# Zest site configuration — oxygen starter
+# Zest documentation site configuration
 [site]
-title = "My Zest Blog"
-description = "A fast, minimal blog built with Zest SSG."
-url = "https://example.com"
-author = "Zest User"
+title = "Zest Docs"
+description = "Documentation for Zest — a static site generator where templates are real F#."
+url = "https://zest-ssg.github.io/zest"
+author = "Zest"
 language = "en"
 
 # ── HTML formatting: pretty-print output with indentation ──
@@ -25,31 +25,30 @@ engine = "native"
 # The oxygen theme is self-contained under _themes/oxygen/.
 # Layouts, includes, locales, and assets are loaded from
 # the theme; project files with the same name take priority.
-# Theme config is declarative via _theme.toml.
 [theme]
-name = "oxygen"
+name = "hope"
 source = "local"
 
 [build]
 output = "_site"
 
-# ── File inclusion / exclusion ──────────────────────
-# Files starting with _ or . are auto-excluded.
-# Explicitly include generated files that get a _ prefix
-# from the afterBuild step (e.g. _friends.html).
-include = ["_friends.html"]
-
-# ── Page defaults: shared frontmatter for matching files ─
+# ── Page defaults ────────────────────────────────────
+# Documentation pages live in one folder per language; every file under
+# `posts/` gets the three-column docs layout. The path is relative to the
+# project directory (where _config.toml lives), hence the `content/` prefix.
 [[defaults]]
-path = "posts/*"
+path = "content/en/posts/*"
 [defaults.values]
-layout = "post"
+layout = "docs"
+
+[[defaults]]
+path = "content/zh/posts/*"
+[defaults.values]
+layout = "docs"
 
 # ── Theme colors (oxygen) ──────────────────────────────
 # Override the oxygen palette from here instead of editing the theme.
 # Every key is optional; unset values fall back to the theme defaults.
 # Supported: accent, background, color.
 [params.colors]
-# accent = "#0074d9"
-# background = "#fffffe"
-# color = "#292929"
+accent = "#4f6ef7"

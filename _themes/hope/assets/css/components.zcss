@@ -1,0 +1,242 @@
+// components.zcss
+//
+// Reusable UI components: search dropdown, copy button, alerts, badges,
+// feature cards and tag pills. Mostly styled for the F# DSL components
+// (DslComponents) plus hand-rolled pieces used by the layouts.
+//
+// Dependencies: tokens.zcss
+
+// ── Copy button on code blocks ────────────────────────
+
+.code-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 9px;
+  font-size: 0.74rem;
+  font-family: var(--font-sans);
+  color: var(--text-faint);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition), color var(--transition);
+}
+
+pre:hover .code-copy { opacity: 1; }
+
+.code-copy:hover { color: var(--accent); border-color: var(--accent-line); }
+
+// ── Alerts (DslComponents: alertInfo/Success/Warning/Danger) ──
+
+.alert {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 1rem 0;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  border: 1px solid;
+}
+
+.alert--info    { background: var(--accent-soft); border-color: var(--accent-line); color: var(--text); }
+.alert--success { background: color-mix(in srgb, var(--ok) 12%, transparent); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+.alert--warning { background: color-mix(in srgb, var(--warn) 12%, transparent); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+.alert--danger  { background: color-mix(in srgb, var(--danger) 12%, transparent); border-color: color-mix(in srgb, var(--danger) 45%, transparent); }
+
+.alert__icon { flex-shrink: 0; }
+
+// ── Badges / tag pills ────────────────────────────────
+
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  font-size: 0.76rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent-line);
+}
+
+.tag-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  margin: 0 6px 6px 0;
+}
+
+.tag-pill:hover { color: var(--accent); border-color: var(--accent-line); text-decoration: none; }
+
+// ── Buttons ───────────────────────────────────────────
+
+.btn {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn:hover { border-color: var(--accent-line); text-decoration: none; }
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn--primary:hover { filter: brightness(1.06); }
+
+// ── Feature cards (home) ──────────────────────────────
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 1.2rem 0;
+}
+
+.feature-card {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition: border var(--transition), box-shadow var(--transition);
+}
+
+.feature-card:hover {
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow);
+}
+
+.feature-card__title {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.feature-card__desc {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+// ── Recent docs list (home) ───────────────────────────
+
+.recent-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.recent-list__item {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-soft);
+}
+
+.recent-list__group {
+  flex-shrink: 0;
+  width: 92px;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+
+.recent-list__title { font-weight: 500; }
+.recent-list__title a:hover { text-decoration: none; }
+
+// ── Tags index / term listing ─────────────────────────
+
+.tag-cloud { margin: 1rem 0; }
+
+.tag-cloud a {
+  display: inline-block;
+  margin: 0 8px 10px 0;
+}
+
+.term-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.term-list__item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.term-list__title { margin-bottom: 2px; }
+
+.term-list__meta {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+// ── Search page (dedicated) ───────────────────────────
+
+.search-page__input {
+  width: 100%;
+  max-width: 480px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  color: var(--text);
+  outline: none;
+}
+
+.search-page__input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.search-result {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.search-result__title { margin-bottom: 2px; }
+.search-result__meta { font-size: 0.82rem; color: var(--text-faint); }
+
+// ── Hero (home) ───────────────────────────────────────
+
+.hero {
+  padding: 8px 0 4px;
+}
+
+.hero__title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+  background: linear-gradient(120deg, var(--accent), var(--code-key));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__lead {
+  font-size: 1.08rem;
+  color: var(--text-soft);
+  max-width: 640px;
+  margin-bottom: 8px;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}

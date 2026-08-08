@@ -4,9 +4,6 @@
 //
 // Generates the site's XML sitemap for search engines. Like the RSS feed it
 // is rendered with no layout so the output is raw XML at /sitemap.xml.
-//
-// The XML is built inline (rather than via DslXml) so the script only reads
-// page fields and never crosses the F# anonymous-record assembly boundary.
 
 open System
 open System.Text
@@ -26,11 +23,12 @@ let pages =
     site_pages ()
     // Exclude machine-generated routes that should not be indexed.
     |> Array.filter (fun p ->
-        p.url <> "/rss.xml" && p.url <> "/sitemap.xml" && p.url <> "/404.html")
+        p.url <> "/rss.xml" && p.url <> "/sitemap.xml" && p.url <> "/404.html"
+        && not (p.url.EndsWith "/rss.xml"))
     |> Array.map (fun p ->
         let priority =
-            if p.url = "/" then 1.0
-            elif p.url.StartsWith("/posts/") then 0.8
+            if p.url = "/en/" || p.url = "/zh/" then 1.0
+            elif p.category <> "" then 0.8
             else 0.5
         p.url, p.date, priority)
 
@@ -38,7 +36,7 @@ let sb = StringBuilder()
 sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>") |> ignore
 sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">") |> ignore
 for (url, date, priority) in pages do
-    let full = if url.StartsWith("/") then siteUrl.TrimEnd('/') + url else url
+    let full = if url.StartsWith "/" then siteUrl.TrimEnd('/') + url else url
     let lastMod =
         match DateTime.TryParse(date) with
         | true, d -> d.ToString("yyyy-MM-dd")

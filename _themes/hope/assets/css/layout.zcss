@@ -1,0 +1,439 @@
+// layout.zcss
+//
+// Page structure for the three-column docs layout: sticky header, sidebar,
+// centered content card and on-this-page TOC. Nested two-col grids produce
+// the outer three-column band (sidebar | article | toc).
+//
+// Dependencies: tokens.zcss
+
+// ── Site header ───────────────────────────────────────
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.brand:hover { text-decoration: none; }
+
+.brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.header-search {
+  position: relative;
+  flex: 1;
+  max-width: 340px;
+  margin-left: auto;
+}
+
+.header-search__input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px 0 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border var(--transition), box-shadow var(--transition);
+}
+
+.header-search__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--card);
+}
+
+.header-search__icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.header-search__results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  max-height: 420px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  display: none;
+}
+
+.header-search__results.is-open { display: block; }
+
+.header-search__item {
+  display: block;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+}
+
+.header-search__item:hover { background: var(--accent-soft); text-decoration: none; }
+
+.header-search__item-title { font-weight: 500; font-size: 0.9rem; }
+
+.header-search__item-group {
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.header-search__empty {
+  padding: 10px;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+// Header actions (dark toggle, language, github)
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--transition), color var(--transition);
+}
+
+.icon-btn:hover { background: var(--bg-soft); color: var(--text); }
+
+// The theme toggle holds both sun and moon SVGs; only the one matching the
+// active theme is shown.
+.icon-moon { display: none; }
+html[data-theme="dark"] .icon-sun  { display: none; }
+html[data-theme="dark"] .icon-moon { display: inline-block; }
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.lang-switch a { padding: 3px 6px; border-radius: 6px; color: var(--text-soft); }
+.lang-switch a.is-active { background: var(--accent-soft); color: var(--accent); }
+.lang-switch a:hover { text-decoration: none; color: var(--accent); }
+.lang-switch__sep { color: var(--border); }
+
+// Mobile sidebar toggle
+
+.sidebar-toggle {
+  display: none;
+}
+
+// ── Three-column band ─────────────────────────────────
+
+.page-band {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--toc-w);
+  gap: var(--page-gap);
+  align-items: start;
+}
+
+.page-band__content {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  gap: var(--page-gap);
+  align-items: start;
+  min-width: 0;
+}
+
+// Pages without a sidebar/toc (about, search, tag archives) collapse the
+// band to a single centred column so the card keeps its full width.
+.page-band--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.page-band--solo .content-card { margin: 0 auto; max-width: var(--content-w); }
+
+// ── Sidebar ───────────────────────────────────────────
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + 20px);
+  max-height: calc(100vh - var(--header-h) - 40px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.sidebar__group { margin-bottom: 18px; }
+
+.sidebar__title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+  padding: 0 8px;
+}
+
+.sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border);
+  margin-left: 8px;
+  padding-left: 8px;
+}
+
+.sidebar__link {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.sidebar__link:hover { color: var(--accent); text-decoration: none; }
+
+.sidebar__link.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 500;
+}
+
+// ── Content card ──────────────────────────────────────
+
+.content-card {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 36px 44px;
+}
+
+.content-body {
+  font-size: 0.98rem;
+}
+
+.content-body > h1:first-child { margin-top: 0; }
+
+.content-body h2 {
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+// Breadcrumb
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.breadcrumb a { color: var(--text-soft); }
+.breadcrumb a:hover { color: var(--accent); text-decoration: none; }
+.breadcrumb__sep { opacity: 0.6; }
+
+// Prev / next footer cards
+
+.page-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 44px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.page-nav__card {
+  display: block;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  transition: border var(--transition), box-shadow var(--transition);
+}
+
+.page-nav__card:hover { border-color: var(--accent-line); box-shadow: var(--shadow); text-decoration: none; }
+
+.page-nav__card--next { text-align: right; }
+
+.page-nav__label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin-bottom: 2px;
+}
+
+.page-nav__title {
+  font-weight: 500;
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+// ── On-this-page TOC ─────────────────────────────────
+
+.toc {
+  position: sticky;
+  top: calc(var(--header-h) + 20px);
+  max-height: calc(100vh - var(--header-h) - 40px);
+  overflow-y: auto;
+  padding-left: 8px;
+  font-size: 0.86rem;
+}
+
+.toc__title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border);
+}
+
+.toc__list--nested { margin-top: 2px; margin-bottom: 2px; }
+
+.toc__link {
+  display: block;
+  padding: 3px 10px;
+  color: var(--text-faint);
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  line-height: 1.4;
+}
+
+.toc__link:hover { color: var(--accent); text-decoration: none; }
+
+.toc__link.is-active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+
+// ── Footer ────────────────────────────────────────────
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--card);
+}
+
+.site-footer__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.site-footer__links {
+  display: flex;
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-footer__links a { color: var(--text-soft); }
+.site-footer__links a:hover { color: var(--accent); }
+
+// Back-to-top
+
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text-soft);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}

@@ -1,0 +1,61 @@
+<!-- @title HAML -->
+<!-- @description HAML 模板支持：本页本身就是一个 .haml 文件，缩进式语法先转换为 HTML 再经 Nunjucks 渲染。 -->
+<!-- @category templates -->
+<!-- @tags zest, 模板, haml -->
+<!-- @date 2026-08-01 -->
+%h1 HAML
+%p 本页本身就是一个 <code>.haml</code> 文件。HAML 以缩进代替标签配对；<code>.haml</code> 文件先由 HamlConverter 转换为 HTML，再交给 Nunjucks 引擎渲染（与其他转换型模板一致）。下面的实时标题就是求值结果：
+%h2= page.title
+
+%h2 基本语法
+:plain
+  <pre><code class="language-haml">%nav.navbar
+  %a{ href: "/" } 首页
+  .nav-item 当前页
+
+  %section.post
+    %h1= page.title
+    %p= page.description</code></pre>
+
+%table
+  %thead
+    %tr
+      %th 写法
+      %th 含义
+  %tbody
+    %tr
+      %td <code>%tag</code>
+      %td 普通标签，如 <code>%div</code>
+    %tr
+      %td <code>.class</code> / <code>#id</code>
+      %td <code>div</code> 简写；<code>%tag.class#id</code> 组合
+    %tr
+      %td <code>%tag&#123;key: "value"&#125;</code>
+      %td 属性哈希（冒号分隔键值）
+    %tr
+      %td <code>= expr</code>
+      %td 输出表达式（转义）；<code>!= expr</code> 不转义
+    %tr
+      %td <code>- code</code>
+      %td 静默代码（不输出）
+    %tr
+      %td <code>/ comment</code>
+      %td HTML 注释
+
+%h2 过滤器
+%p <code>:css</code> 与 <code>:javascript</code> 过滤器会把缩进的正文块包装成 <code>&lt;style&gt;</code> / <code>&lt;script&gt;</code>；<code>:markdown</code> 则直通留给 Markdown 管线：
+:plain
+  <pre><code class="language-haml">:css
+  .hero { color: #333; }
+
+  :javascript
+    console.log("hi");</code></pre>
+
+%h2 转换细节
+%ul
+  %li 严格缩进：每级缩进为一个制表符或两个空格；混合或奇数宽度缩进会报错而不是猜测。
+  %li 转义：文本内容与属性值都做 HTML 转义（XSS 安全）。
+  %li void 元素：输出 HTML5 形式（<code>&lt;br&gt;</code> 而非 <code>&lt;br /&gt;</code>）。
+  %li 缓存：转换结果按内容哈希缓存，未变化的文件不会重复转换。
+
+%p 转换后的 HTML 仍可包含 Nunjucks 语法（如 <code>&#123;% for %&#125;</code>），因为后续会交给 Nunjucks 引擎渲染；模板上下文见 %a{ href: "/zh/posts/template-reference/" }模板参考。

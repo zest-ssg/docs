@@ -1,0 +1,23 @@
+<!-- tags.html
+     Nunjucks fragment for the tags index page. The TaxonomyGenerator renders
+     this body with Nunjucks (variables: taxonomy, tags), then wraps the
+     result in the base layout. -->
+{% set lang = site.language | default('en') %}
+<div class="page-band page-band--solo">
+  <article class="content-card">
+    <nav class="breadcrumb">
+      <a href="/{{ lang }}/">Home</a>
+      <span class="breadcrumb__sep">/</span>
+      <span>Tags</span>
+    </nav>
+    <div class="content-body">
+      <h1>{{ taxonomy.plural | capitalize }}</h1>
+      <p class="tags-page__lead">Browse every post by topic.</p>
+      <div class="tag-cloud">
+        {% for t in tags %}
+        <a class="tag-pill" href="/{{ taxonomy.plural }}/{{ t }}/">#{{ t }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </article>
+</div>

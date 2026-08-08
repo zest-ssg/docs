@@ -1,0 +1,28 @@
+<!-- tag.html
+     Nunjucks fragment for a single tag archive page. The TaxonomyGenerator
+     renders this body with Nunjucks (variables: term, term_pages, taxonomy),
+     then wraps the result in the base layout. -->
+{% set lang = site.language | default('en') %}
+<div class="page-band page-band--solo">
+  <article class="content-card">
+    <nav class="breadcrumb">
+      <a href="/{{ lang }}/">Home</a>
+      <span class="breadcrumb__sep">/</span>
+      <a href="/tags/">Tags</a>
+    </nav>
+    <div class="content-body">
+      <h1>{{ taxonomy.plural | capitalize }}: {{ term }}</h1>
+      <p class="term-page__count">{{ term_pages | length }} posts</p>
+      <ul class="term-list">
+        {% for p in term_pages %}
+        <li class="term-list__item">
+          <h3 class="term-list__title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+          {% if p.description %}<div class="term-list__meta">{{ p.description }}</div>{% endif %}
+        </li>
+        {% else %}
+        <li class="term-list__item">No posts found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
+</div>

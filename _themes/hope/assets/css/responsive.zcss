@@ -1,0 +1,108 @@
+// responsive.zcss
+//
+// Breakpoints for the docs theme. The three-column band collapses to two
+// columns (no TOC) at <=1360px and to a single column with a drawer sidebar
+// at <=1080px. Header actions compress first on small screens.
+//
+// Dependencies: tokens.zcss, layout.zcss
+
+// ≤1360px — drop the right TOC column
+@media (max-width: 1360px) {
+  .page-band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc { display: none; }
+}
+
+// ≤1080px — drop the sidebar column, enable the drawer
+@media (max-width: 1080px) {
+  .page-band {
+    padding: 20px 16px 40px;
+  }
+
+  .page-band__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    width: min(320px, 84vw);
+    z-index: 40;
+    max-height: none;
+    padding: 20px 18px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-100%);
+    transition: transform var(--transition);
+    overflow-y: auto;
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    background: rgba(10, 12, 18, 0.4);
+    z-index: 39;
+    display: none;
+  }
+
+  .sidebar-backdrop.is-open { display: block; }
+}
+
+// ≤820px — compact header, stack footer, tighten the card
+@media (max-width: 820px) {
+  .site-header__inner {
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .brand__text { display: none; }
+
+  .header-search {
+    max-width: none;
+  }
+
+  .header-search__results {
+    position: fixed;
+    top: var(--header-h);
+    left: 10px;
+    right: 10px;
+  }
+
+  .content-card {
+    padding: 24px 20px;
+    border-radius: var(--radius-sm);
+  }
+
+  .page-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .page-nav__card--next { text-align: left; }
+
+  .site-footer__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero__title { font-size: 1.7rem; }
+}
+
+// ≤480px — smallest phones
+@media (max-width: 480px) {
+  .lang-switch { display: none; }
+  .hero__actions { flex-direction: column; }
+  .hero__actions .btn { text-align: center; }
+}

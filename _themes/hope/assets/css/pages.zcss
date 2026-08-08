@@ -1,0 +1,45 @@
+// pages.zcss
+//
+// Page-level styles for special pages: 404 and the tag/taxonomy pages.
+// The docs and home layouts reuse layout.zcss primitives.
+//
+// Dependencies: tokens.zcss, layout.zcss
+
+// ── Home (full-width band, no sidebar) ────────────────
+
+.home-band {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+}
+
+// ── 404 ───────────────────────────────────────────────
+
+.not-found {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.not-found__code {
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.not-found__text {
+  color: var(--text-soft);
+  margin-bottom: 24px;
+}
+
+// ── Tag / taxonomy pages ──────────────────────────────
+
+.tags-page__lead {
+  color: var(--text-soft);
+}
+
+.term-page__count {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}

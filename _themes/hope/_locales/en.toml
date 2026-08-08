@@ -1,0 +1,46 @@
+# English locale strings for the oxygen docs theme.
+# Looked up by the DSL `t` helper as `locale.en.<section>.<key>`.
+
+[nav]
+home = "Home"
+menu = "Toggle menu"
+prev = "Previous"
+next = "Next"
+back_top = "Back to top"
+search = "Search"
+
+[sidebar]
+guides = "Guides"
+templates = "Templates"
+dsl = "Zest DSL"
+styling = "Styling"
+features = "Features"
+reference = "Reference"
+
+[search]
+placeholder = "Search docs…"
+empty = "No results."
+no_query = "Type something to search the docs."
+lead = "Search every page of the documentation — the index is generated at build time and filtered entirely in your browser."
+
+[toc]
+title = "On this page"
+
+[theme]
+toggle = "Toggle dark mode"
+
+[meta]
+recent_posts = "Recent posts"
+no_posts = "No posts yet."
+min_read = "min read"
+
+[notfound]
+message = "The page you were looking for could not be found."
+back_home = "Back to home"
+
+[post]
+prev = "Older post"
+next = "Newer post"
+
+[footer]
+built_with = "Built with Zest"

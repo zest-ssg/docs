@@ -1,0 +1,48 @@
+<!-- @title Handlebars -->
+<!-- @description Handlebars 模板支持：本页本身就是一个 .hbs 文件，由独立 Hbs 引擎渲染，保留原生语义。 -->
+<!-- @category templates -->
+<!-- @tags zest, 模板, handlebars -->
+<!-- @date 2026-08-01 -->
+{{! 本页是真实的 .hbs 模板；{{! }} 是 Handlebars 注释，不输出 }}
+<h1>{{ page.title }}</h1>
+<p>本页本身就是一个 <code>.hbs</code> 文件。与 Liquid 不同，<code>.hbs</code> 文件<strong>不做 Nunjucks 转换</strong>，而是由独立的 Hbs 引擎直接渲染，保留原生 Handlebars/Mustache 语义（<code>&#123;&#123;{ }}}、区块、../ 相对路径、@index、partial 等）。</p>
+
+<h2>变量与转义</h2>
+<p>当前站点名称为 <strong>{{ site.title }}</strong>——这是 <code>&#123;&#123; site.title &#125;&#125;</code> 的真实求值结果。</p>
+<p><code>&#123;&#123; expr &#125;&#125;</code> 输出时默认 HTML 转义；需要原始 HTML 时用三花括号 <code>&#123;&#123;&#123; expr &#125;&#125;&#125;</code>。</p>
+
+<h2>条件与上下文</h2>
+{{#if site.title}}
+<p class="alert alert--info">这个提示由 <code>if</code> 区块渲染——条件 <code>site.title</code> 为真。</p>
+{{/if}}
+<p>区块（block）是 Handlebars 的核心：<code>&#123;&#123;#if &#125;&#125;</code>、<code>&#123;&#123;#each &#125;&#125;</code>、<code>&#123;&#123;#with &#125;&#125;</code> 都会切换上下文。下面用 <code>with</code> 进入当前页上下文：</p>
+{{#with page}}
+<p>当前页标题：<strong>{{ title }}</strong>（通过 <code>with page</code> 后直接访问 <code>&#123;&#123; title &#125;&#125;</code>）。</p>
+{{/with}}
+
+<h2>特性一览</h2>
+<table>
+  <thead>
+    <tr><th>语法</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>&#123;&#123; expr &#125;&#125;</code></td><td>输出变量，HTML 转义</td></tr>
+    <tr><td><code>&#123;&#123;&#123; expr &#125;&#125;&#125;</code></td><td>输出变量，不转义（原始 HTML）</td></tr>
+    <tr><td><code>&#123;&#123;#if &#125;&#125; … &#123;&#123;/if &#125;&#125;</code></td><td>条件分支（<code>else if</code> / <code>else</code>）</td></tr>
+    <tr><td><code>&#123;&#123;#each list &#125;&#125; … &#123;&#123;/each &#125;&#125;</code></td><td>遍历，<code>&#123;&#123;@index &#125;&#125;</code> / <code>&#123;&#123;@first &#125;&#125;</code> 可用</td></tr>
+    <tr><td><code>&#123;&#123;#with obj &#125;&#125; … &#123;&#123;/with &#125;&#125;</code></td><td>切换上下文</td></tr>
+    <tr><td><code>&#123;&#123;#unless &#125;&#125; … &#123;&#123;/unless &#125;&#125;</code></td><td>反向条件</td></tr>
+    <tr><td><code>&#123;&#123;&gt; partial &#125;&#125;</code></td><td>渲染 partial（来自 <code>_includes/</code>）</td></tr>
+    <tr><td><code>&#123;&#123;! 注释 &#125;&#125;</code></td><td>模板注释，不输出</td></tr>
+  </tbody>
+</table>
+
+<h2>与 Nunjucks 的差异</h2>
+<ul>
+  <li>数据模型相同：模板上下文同样注入 <code>page.*</code>、<code>site.*</code>、<code>pages</code>、<code>tags</code>、<code>collections</code>（见<a href="/zh/posts/template-reference/">模板参考</a>）。</li>
+  <li>语法不同：Handlebars 没有 Nunjucks 的 <code>{% tag %}</code> 与过滤器管道，没有宏、<code>extends</code> 继承等概念；<code>each</code>、<code>with</code> 等是 Hbs 原生的区块语法。</li>
+  <li>输出语义不同：<code>&#123;&#123; expr &#125;&#125;</code> 默认转义，需要原始 HTML 时显式使用三花括号。</li>
+</ul>
+
+<h2>使用场景</h2>
+<p>适合从 Handlebars 迁移的既有项目。若同时使用多种模板语言，注意每个文件按扩展名路由到对应引擎，互不干扰。</p>
