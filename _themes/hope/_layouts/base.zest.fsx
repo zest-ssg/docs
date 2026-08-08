@@ -3,7 +3,7 @@
 // Root layout for every page in the oxygen docs theme. Renders the complete
 // document: head (meta, styles, theme bootstrap, search index), site header
 // with live search, the page region (<main>) and the footer. The docs, home
-// and default layouts nest inside this one via `// @layout base`.
+// and default layouts nest inside this one as parent layouts.
 //
 // Dependencies: Zest.Dsl (auto-opened in the layout preamble), ZestContext
 
@@ -80,11 +80,11 @@ let renderHead =
         link "alternate" (sprintf "%s/%s/rss.xml" siteBaseUrl langCode)
         title [ text (page.title + " | " + siteTitle) ]
         meta [ attr "name" "description"; attr "content" page.description ]
-        meta [ attr "name" "theme-color"; attr "content" (if accentColor <> "" then accentColor else "#4f6ef7") ]
+        meta [ attr "name" "theme-color"; attr "content" (if accentColor <> "" then accentColor else "#2d4a2d") ]
         stylesheet "/assets/css/main.css"
         link "preconnect" "https://fonts.googleapis.com"
         link "preconnect" "https://fonts.gstatic.com"
-        stylesheet "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Inconsolata:wght@400&display=swap"
+        stylesheet "https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Inconsolata:wght@400&display=swap"
         // User-configurable accent from [params.colors] wins over the token.
         showIf (accentColor <> "") (styleZcss (sprintf ":root { --accent: %s; }" accentColor))
         // Apply the saved / system theme before the first paint to avoid a flash.

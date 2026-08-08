@@ -1,0 +1,58 @@
+<!-- @title Pug -->
+<!-- @description Pug 模板支持：本页本身就是一个 .pug 文件，缩进式语法转换为带 Nunjucks 指令的 HTML 后渲染。 -->
+<!-- @category templates -->
+<!-- @tags zest, 模板, pug -->
+<!-- @date 2026-08-01 -->
+h1 Pug
+p 本页本身就是一个 <code>.pug</code> 文件。Pug（旧称 Jade）以缩进定义嵌套；<code>.pug</code> 文件由 PugConverter 先构建缩进树，再转换为带 Nunjucks 指令的 HTML，交给 Nunjucks 引擎渲染。下面的实时标题就是求值结果：
+h2
+  = page.title
+
+h2 基本语法
+pre
+  code.language-pug.
+    doctype html
+    html(lang=site.language)
+      body
+        header
+          h1= page.title
+        main
+          each post in posts
+            article.post
+              h2: a(href=post.url)= post.title
+              p= post.description
+          else
+            p 暂无文章。
+        include footer.pug
+
+h2 语法映射
+table
+  tr
+    th 写法
+    th 含义
+  tr
+    td <code>tag</code> / <code>tag.class</code> / <code>tag#id</code>
+    td 标签与类 / id
+  tr
+    td <code>tag(attr="v")</code>
+    td 括号属性列表
+  tr
+    td <code>| text</code>
+    td 字面文本（<code>#&#123;expr&#125;</code> 插值）
+  tr
+    td <code>= expr</code> / <code>!= expr</code>
+    td 输出表达式（转义 / 不转义）
+  tr
+    td <code>- var x = expr</code>
+    td 转译为 <code>&#123;% set x = expr %&#125;</code>
+
+h2 控制流与组件
+ul
+  li 条件：<code>if</code> / <code>else if</code> / <code>else</code> / <code>unless</code> 转译为 <code>&#123;% if %&#125;</code> / <code>&#123;% elif %&#125;</code> / <code>&#123;% else %&#125;</code> / <code>&#123;% if not %&#125;</code>。
+  li 遍历：<code>each item in list</code> 与 <code>each val, key in obj</code> 转译为 <code>&#123;% for %&#125;</code>（对象形式键值互换）。
+  li 混入：<code>mixin name(args)</code> 与 <code>+name(args)</code> 转译为 Nunjucks 的 <code>&#123;% macro %&#125;</code> / <code>&#123;&#123; name() &#125;&#125;</code>。
+  li 继承与包含：<code>extends</code> / <code>block</code> / <code>include</code> 转译为 <code>&#123;% extends %&#125;</code> / <code>&#123;% block %&#125;</code> / <code>&#123;% include %&#125;</code>。
+  li <code>tag.</code> 表示原始文本块（如 <code>script.</code> / <code>style.</code>）；<code>// comment</code> 转为 HTML 注释，<code>//-</code> 直接剥离。
+
+h2 转换细节
+p 文本与属性值做 HTML 转义；void 元素输出 HTML5 形式。转换结果按内容哈希缓存，未变化的文件不会重复转换。模板上下文（<code>page.*</code>、<code>site.*</code>、<code>posts</code> 等）见 <a href="/zh/posts/template-reference/">模板参考</a>。

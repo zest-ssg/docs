@@ -63,27 +63,29 @@
     var ul = document.createElement('ul');
     ul.className = 'toc__list';
     nav.appendChild(ul);
-    var parent = { el: ul, level: 2 };
 
+    // Track the open nesting level with a stack; pop it when a heading sits
+    // at or above the current level (h2 after h3 returns to the root list).
+    var stack = [{ el: ul, level: 2 }];
     heads.forEach(function (h) {
       var level = Number(h.tagName[1]);
-      while (level > parent.level) {
+      while (stack.length > 1 && level <= stack[stack.length - 1].level) stack.pop();
+      var parent = stack[stack.length - 1];
+      if (level > parent.level) {
         var nested = document.createElement('ul');
         nested.className = 'toc__list toc__list--nested';
         parent.el.appendChild(nested);
-        parent = { el: nested, level: level };
+        stack.push({ el: nested, level: level });
+        parent = nested;
       }
-      while (level < parent.level && parent !== rootLevel()) { /* not tracked */ }
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.href = '#' + h.id;
       a.className = 'toc__link';
       a.textContent = h.textContent;
       li.appendChild(a);
-      parent.el.appendChild(li);
+      parent.appendChild(li);
     });
-
-    function rootLevel() { return { el: ul, level: 2 }; }
 
     // Scroll-spy: highlight the heading currently near the viewport top.
     var links = nav.querySelectorAll('.toc__link');

@@ -18,29 +18,27 @@
     %p= page.description</code></pre>
 
 %table
-  %thead
-    %tr
-      %th 写法
-      %th 含义
-  %tbody
-    %tr
-      %td <code>%tag</code>
-      %td 普通标签，如 <code>%div</code>
-    %tr
-      %td <code>.class</code> / <code>#id</code>
-      %td <code>div</code> 简写；<code>%tag.class#id</code> 组合
-    %tr
-      %td <code>%tag&#123;key: "value"&#125;</code>
-      %td 属性哈希（冒号分隔键值）
-    %tr
-      %td <code>= expr</code>
-      %td 输出表达式（转义）；<code>!= expr</code> 不转义
-    %tr
-      %td <code>- code</code>
-      %td 静默代码（不输出）
-    %tr
-      %td <code>/ comment</code>
-      %td HTML 注释
+  %tr
+    %th 写法
+    %th 含义
+  %tr
+    %td <code>%tag</code>
+    %td 普通标签，如 <code>%div</code>
+  %tr
+    %td <code>.class</code> / <code>#id</code>
+    %td <code>div</code> 简写；<code>%tag.class#id</code> 组合
+  %tr
+    %td <code>%tag&#123;key: "value"&#125;</code>
+    %td 属性哈希（冒号分隔键值）
+  %tr
+    %td <code>= expr</code>
+    %td 输出表达式（转义）；<code>!= expr</code> 不转义
+  %tr
+    %td <code>- code</code>
+    %td 静默代码（不输出）
+  %tr
+    %td <code>/ comment</code>
+    %td HTML 注释
 
 %h2 过滤器
 %p <code>:css</code> 与 <code>:javascript</code> 过滤器会把缩进的正文块包装成 <code>&lt;style&gt;</code> / <code>&lt;script&gt;</code>；<code>:markdown</code> 则直通留给 Markdown 管线：
@@ -58,4 +56,4 @@
   %li void 元素：输出 HTML5 形式（<code>&lt;br&gt;</code> 而非 <code>&lt;br /&gt;</code>）。
   %li 缓存：转换结果按内容哈希缓存，未变化的文件不会重复转换。
 
-%p 转换后的 HTML 仍可包含 Nunjucks 语法（如 <code>&#123;% for %&#125;</code>），因为后续会交给 Nunjucks 引擎渲染；模板上下文见 %a{ href: "/zh/posts/template-reference/" }模板参考。
+%p 转换后的 HTML 仍可包含 Nunjucks 语法（如 <code>&#123;% for %&#125;</code>），因为后续会交给 Nunjucks 引擎渲染；模板上下文见 <a href="/zh/posts/template-reference/">模板参考</a>。

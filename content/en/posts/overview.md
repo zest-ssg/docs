@@ -62,4 +62,4 @@ The [PJAX script](/en/posts/pjax/) intercepts same-origin link clicks, fetches t
 | Search | Build-time index | Plugin | External | Plugin | Plugin |
 | Runtime | .NET (F# / C#) | Ruby | Go | Node.js | Node.js |
 
-The comparison is deliberately narrow: Zest's differentiators are the F# DSL, the unified extension-based template pipeline and the zero-configuration build.
+The comparison is deliberately narrow: Zest's differentiators are the F# DSL, the unified extension-based template pipeline and the zero-configuration build. Zest takes its main inspiration from **Eleventy**: conventions over configuration, swappable template languages and fully static output. On top of that, Zest lets templates themselves become type-safe code via F#, and ships optional `[compat]` switches for Jekyll / Hexo / Hugo / Eleventy to ease migration.

@@ -45,7 +45,7 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--on-accent);
   font-weight: 700;
@@ -367,16 +367,17 @@ html[data-theme="dark"] .icon-moon { display: inline-block; }
   display: block;
   padding: 3px 10px;
   color: var(--text-faint);
-  border-left: 2px solid transparent;
-  margin-left: -1px;
   line-height: 1.4;
 }
 
 .toc__link:hover { color: var(--accent); text-decoration: none; }
 
+// Active entry uses a soft field rather than a side stripe: the paper style
+// bans one-sided accent borders, and a filled pill reads cleaner in both themes.
 .toc__link.is-active {
   color: var(--accent);
-  border-left-color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
   font-weight: 500;
 }
 
@@ -420,7 +421,7 @@ html[data-theme="dark"] .icon-moon { display: inline-block; }
   width: 40px;
   height: 40px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: var(--card);
   color: var(--text-soft);
   box-shadow: var(--shadow-lg);

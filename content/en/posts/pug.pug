@@ -1,0 +1,74 @@
+<!-- @title Pug -->
+<!-- @description Use Pug templates in Zest: indentation-based markup converted to HTML and rendered through Nunjucks. -->
+<!-- @category templates -->
+<!-- @tags zest, pug, templates -->
+<!-- @date 2026-08-01 -->
+h1 Pug
+p Pug is supported through Zest's template compatibility layer: a <code>.pug</code> file is converted to HTML by the <code>PugConverter</code> and then rendered by the Nunjucks engine. This page itself is a <code>.pug</code> file. The live title below is the evaluation result:
+h2
+  = page.title
+
+h2 How It Works
+p The converter parses Pug's indentation-based syntax and emits HTML, then hands the result to the Nunjucks engine. Content files and layouts with the <code>.pug</code> extension both go through this conversion, so the full site context (<code>site.*</code>, <code>page.*</code>, <code>pages</code>, <code>tags</code>, <code>collections</code>) is available.
+
+h2 Tags and Nesting
+pre
+  code.language-pug.
+    h1 A heading
+    p.lead A paragraph with class "lead"
+    #main-content
+      span.badge New
+ul
+  li <code>tag</code> — an explicit element.
+  li <code>.class</code> and <code>#id</code> — shorthand that implies a <code>div</code>.
+  li Indentation expresses nesting: children are indented under their parent.
+
+h2 Attributes
+pre
+  code.language-pug.
+    a(href="/about/", title="About") About us
+    img(src="/img/logo.png", alt="Logo")
+p Attribute values are HTML-escaped for safety.
+
+h2 Text
+ul
+  li Plain lines are emitted as text content.
+  li <code>| text</code> — an explicit literal-text line.
+  li <code>= expr</code> — evaluates an expression and outputs it, converted to <code>&#123;&#123; expr &#125;&#125;</code> for the Nunjucks engine:
+
+h2 Includes and Doctype
+ul
+  li <code>include path</code> — converted to <code>&#123;% include "path" %&#125;</code> so partials resolve from <code>_includes/</code>.
+  li <code>doctype</code> — converted to <code>&lt;!DOCTYPE html&gt;</code>.
+
+h2 Mixins
+p Pug mixins are not executed by the converter. Define reusable markup with Zest includes instead, or fall back to Nunjucks macros:
+pre
+  code.language-njk.
+    &#123;% macro card(title, body) %&#125;
+      <div class="card">
+        <h3>&#123;&#123; title &#125;&#125;</h3>
+        <p>&#123;&#123; body &#125;&#125;</p>
+      </div>
+    &#123;% endmacro %&#125;
+
+h2 Example
+p A complete <code>.pug</code> content page:
+pre
+  code.language-pug.
+    <!-- @title Pug Page -->
+    <!-- @layout default -->
+    article
+      h1= page.title
+      p= page.description
+      ul
+        li First
+        li Second
+
+h2 Notes and Limits
+ul
+  li HTML5 void elements are emitted without a trailing slash.
+  li Tabs and arbitrary-width indentation are supported.
+  li The converter covers the structural subset of Pug; complex inline JavaScript and mixin definitions are not executed — only the documented forms are translated.
+  li Because the converted output is rendered by Nunjucks, Pug's <code>=</code> expression syntax becomes a <code>&#123;&#123; &#125;&#125;</code> placeholder: <code>= page.title</code> renders <code>&#123;&#123; page.title &#125;&#125;</code>.
+p Pug is a good choice when porting existing templates. For new projects, the native <a href="/en/posts/zest-dsl/">Zest DSL</a> or <a href="/en/posts/nunjucks/">Nunjucks</a> are the primary template languages.

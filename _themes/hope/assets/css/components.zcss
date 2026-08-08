@@ -18,7 +18,7 @@
   color: var(--text-faint);
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   opacity: 0;
   transition: opacity var(--transition), color var(--transition);
@@ -54,7 +54,7 @@ pre:hover .code-copy { opacity: 1; }
   display: inline-block;
   padding: 2px 9px;
   font-size: 0.76rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: var(--accent-soft);
   color: var(--accent);
   border: 1px solid var(--accent-line);
@@ -64,7 +64,7 @@ pre:hover .code-copy { opacity: 1; }
   display: inline-block;
   padding: 2px 10px;
   font-size: 0.8rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: var(--bg-soft);
   color: var(--text-soft);
   border: 1px solid var(--border);
@@ -78,7 +78,7 @@ pre:hover .code-copy { opacity: 1; }
 .btn {
   display: inline-block;
   padding: 8px 18px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 0.92rem;
   font-weight: 500;
   border: 1px solid var(--border);
@@ -222,10 +222,8 @@ pre:hover .code-copy { opacity: 1; }
   font-size: 2.2rem;
   font-weight: 700;
   margin: 0 0 10px;
-  background: linear-gradient(120deg, var(--accent), var(--code-key));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  // Flat green ink: both stylekits forbid gradient text on paper.
+  color: var(--accent);
 }
 
 .hero__lead {
@@ -239,4 +237,14 @@ pre:hover .code-copy { opacity: 1; }
   display: flex;
   gap: 12px;
   margin-top: 20px;
+}
+
+// ── Giscus comments ──────────────────────────────────
+// Thread wrapper sits between the article body and the pager; the top rule
+// separates the discussion from the prose like a paper break.
+
+.giscus-wrapper {
+  margin-top: 44px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border-soft);
 }

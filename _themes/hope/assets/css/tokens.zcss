@@ -1,55 +1,61 @@
 // tokens.zcss
 //
-// Design tokens for the oxygen docs theme: colors, fonts, spacing, radii,
-// shadows and fixed dimensions. Light values live on :root; the dark palette
-// is applied when <html data-theme="dark"> is set by main.js.
+// Design tokens for the docs theme, blending a LaTeX-paper typographic
+// voice (serif throughout, booktabs tables, restrained radius) with the
+// Victorian-botanical palette (warm parchment surfaces, deep green ink,
+// antique gold accents). Light values live on :root; the dark palette is
+// applied when <html data-theme="dark"> is set by main.js.
 //
 // Dependencies: none (imported first by main.zcss)
 
-$font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+$font-serif: 'Source Serif 4', 'Noto Serif SC', Georgia, 'Times New Roman', serif;
 $font-mono: 'Inconsolata', ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
 
 :root {
-  --font-sans: $font-sans;
+  // Serif everywhere: paper style forbids sans headings, botanical forbids
+  // sans for headings too, so UI text shares the serif stack.
+  --font-sans: $font-serif;
   --font-mono: $font-mono;
 
-  // Surfaces
-  --bg:          #f6f7f9;
-  --bg-soft:     #edeff4;
-  --card:        #ffffff;
-  --border:      #e3e6ec;
-  --border-soft: #eceef3;
+  // Surfaces — warm parchment
+  --bg:          #f6f1e6;
+  --bg-soft:     #efe8d8;
+  --card:        #fffdf8;
+  --border:      #e2d8c2;
+  --border-soft: #ece4d1;
 
-  // Text
-  --text:        #2f333b;
-  --text-soft:   #5b6370;
-  --text-faint:  #8a93a1;
+  // Text — warm ink
+  --text:        #24241f;
+  --text-soft:   #5a564a;
+  --text-faint:  #8b8572;
 
-  // Brand accent (overridable via [params.colors] in _config.toml)
-  --accent:      #4f6ef7;
-  --accent-soft: #eef1fe;
-  --accent-line: #c8d4ff;
-  --on-accent:   #ffffff;
+  // Brand — botanical green with gold emphasis
+  --accent:      #2d4a2d;
+  --accent-soft: #e6ece0;
+  --accent-line: #c3d0b8;
+  --on-accent:   #f7f2e6;
+  --gold:        #8b6914;
+  --gold-soft:   #f4ecd6;
 
-  // Code
-  --code-bg:     #f4f5f8;
-  --code-border: #e5e8ef;
-  --code-text:   #39415f;
-  --code-key:    #7c5cff;
+  // Code — parchment-tinted
+  --code-bg:     #f3edde;
+  --code-border: #e3dac4;
+  --code-text:   #3b392f;
+  --code-key:    #7a5c12;
 
-  // Feedback
-  --ok:     #1f9d55;
-  --warn:   #b7791f;
-  --danger: #d64545;
-  --info:   #2b6cb0;
+  // Feedback — muted, warm-leaning semantic hues
+  --ok:     #2e7d32;
+  --warn:   #9a6b10;
+  --danger: #b3402a;
+  --info:   #166a6a;
 
-  // Elevation
-  --shadow:    0 1px 3px rgba(18, 25, 40, 0.06), 0 1px 2px rgba(18, 25, 40, 0.04);
-  --shadow-lg: 0 10px 30px rgba(18, 25, 40, 0.10);
+  // Elevation — very soft warm shadows; paper stays flat
+  --shadow:    0 1px 2px rgba(62, 51, 22, 0.05), 0 2px 6px rgba(62, 51, 22, 0.06);
+  --shadow-lg: 0 6px 20px rgba(62, 51, 22, 0.10);
 
-  // Shape
-  --radius:     10px;
-  --radius-sm:  6px;
+  // Shape — restrained radius, never pills
+  --radius:     8px;
+  --radius-sm:  4px;
 
   // Layout dimensions
   --sidebar-w:  276px;
@@ -63,31 +69,33 @@ $font-mono: 'Inconsolata', ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, m
 }
 
 html[data-theme="dark"] {
-  --bg:          #17181d;
-  --bg-soft:     #1e2027;
-  --card:        #212329;
-  --border:      #31343d;
-  --border-soft: #2a2d35;
+  --bg:          #1b1b17;
+  --bg-soft:     #24231e;
+  --card:        #26251f;
+  --border:      #3a372e;
+  --border-soft: #302e26;
 
-  --text:        #e6e8ee;
-  --text-soft:   #a9afbb;
-  --text-faint:  #767e8c;
+  --text:        #e7e2d4;
+  --text-soft:   #b0aa98;
+  --text-faint:  #837d6a;
 
-  --accent:      #8299ff;
-  --accent-soft: #2a3050;
-  --accent-line: #3b4470;
-  --on-accent:   #11141f;
+  --accent:      #9dbf8e;
+  --accent-soft: #2b3526;
+  --accent-line: #41543a;
+  --on-accent:   #171b12;
+  --gold:        #c8a24c;
+  --gold-soft:   #37301a;
 
-  --code-bg:     #181a21;
-  --code-border: #2c2f39;
-  --code-text:   #c9d2f0;
-  --code-key:    #a78bfa;
+  --code-bg:     #20201c;
+  --code-border: #343129;
+  --code-text:   #d4cdbb;
+  --code-key:    #c8a24c;
 
-  --ok:     #4ade80;
-  --warn:   #fbbf24;
-  --danger: #f87171;
-  --info:   #60a5fa;
+  --ok:     #7bbf6f;
+  --warn:   #d3a94f;
+  --danger: #e08a72;
+  --info:   #6bb5b5;
 
-  --shadow:    0 1px 3px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --shadow:    0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.45);
 }

@@ -1,3 +1,4 @@
+// @layout base
 // docs.zest.fsx
 //
 // Three-column documentation layout used by all reference pages. Builds the
@@ -9,9 +10,7 @@
 // The layout script runs in its own FSI session, so the context helpers from
 // base.zest.fsx are re-declared here rather than shared.
 //
-// Dependencies: base.zest.fsx (nested via `// @layout base`), ZestContext
-
-// @layout base
+// Dependencies: base.zest.fsx (parent layout), ZestContext
 
 // ── Context helpers ─────────────────────────────────
 
@@ -115,6 +114,27 @@ let renderToc =
         divC "toc__body" []
     ]
 
+// ── Giscus comments ─────────────────────────────────
+// GitHub Discussions thread keyed by page pathname, so each locale keeps
+// its own thread. preferred_color_scheme follows the OS theme; the site's
+// manual toggle is out of scope for the embedded widget.
+let renderComments =
+    raw (sprintf """<div class="giscus-wrapper"><script src="https://giscus.app/client.js"
+  data-repo="zest-ssg/zest"
+  data-repo-id="R_kgDOTAJptA"
+  data-category="Comments"
+  data-category-id="DIC_kwDOTAJptM4C_mBB"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="top"
+  data-theme="fro"
+  data-lang="%s"
+  data-loading="lazy"
+  crossorigin="anonymous"
+  async></script></div>""" (if langCode = "zh" then "zh-CN" else "en"))
+
 // ── Document body ────────────────────────────────────
 
 render [
@@ -124,6 +144,7 @@ render [
             articleC "content-card" [
                 renderBreadcrumb
                 divC "content-body" [ raw content ]
+                renderComments
                 renderPageNav
             ]
         ]

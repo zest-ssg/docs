@@ -51,4 +51,4 @@ layout = "docs"
 # Every key is optional; unset values fall back to the theme defaults.
 # Supported: accent, background, color.
 [params.colors]
-accent = "#4f6ef7"
+accent = "#2d4a2d"
